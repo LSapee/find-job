@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>크롤링 보여주기</title>
+</head>
+<style>
+    li,ol,ul {list-style: none; margin:0;}
+    li{padding-top:10px; padding-bottom:10px; padding-left: 10px;}
+    ul{padding:0;}
+</style>
+<script>
+      async function jobk(){
+          const st = document.getElementById("st");
+        const myData = await fetch("http://localhost:3000/jobk")
+            .then((r)=>r.json())
+            .then((json)=>json)
+        for(let i=0; i<myData.length; i++){
+            const company = myData[i].company;
+            const postTitle = myData[i].title;
+            const requirements = myData[i].requirements;
+            const field = myData[i].field;
+            const postUrl = myData[i].url;
+            const temp = document.createElement("div");
+            temp.innerHTML =
+                `
+                <li style="border : 1px solid black; ">
+                <a href="${postUrl}" target="_blank" rel="noopener noreferrer">
+                <h2>${company}</h2>
+                <h3>${postTitle}</h3>
+                <span>${requirements}</span>
+                <span>${field}</span>
+                </a>
+                </li>
+            `
+            st.append(temp);
+        }
+    }
+    async function saramin (){
+        const st = document.getElementById("st");
+        const myData = await fetch("http://localhost:3000/saramin")
+            .then((r)=>r.json())
+            .then((json)=>json)
+        for(let i =0; i<myData.length; i++){
+            const company = myData[i].company;
+            const cont =myData[i].cont;
+            const postTitle = myData[i].postTitle;
+            const requirements = myData[i].requirements;
+            const endDate = myData[i].endDate;
+            const field = myData[i].skillStack;
+            const postUrl = myData[i].postUrl;
+            const temp = document.createElement("div");
+            temp.innerHTML =
+                `
+                <li style="border : 1px solid black">
+                <a href="${postUrl}" target="_blank" rel="noopener noreferrer">
+                <h2>${company}</h2>
+                <h3>${postTitle}</h3>
+                <span>${cont}</span>
+                <span>${requirements}</span>
+                <span>${field}</span>
+                <span>${endDate}</span>
+                </a>
+                </li>
+            `
+            st.append(temp);
+        }
+    }
+
+
+</script>
+<body>
+    <h1> 크롤링 할거임</h1>
+    <button onClick="jobk()"> 잡코리아 가져와 </button>
+    <button onClick="saramin()"> 사람인 가져와 </button>
+    <div>
+        <ul id="st">
+
+        </ul>
+    </div>
+</body>
+</html>
