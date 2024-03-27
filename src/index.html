@@ -11,10 +11,19 @@
 </style>
 <script>
       async function jobk(){
+          const title = document.getElementById("searchTitle").value;
           const st = document.getElementById("st");
-        const myData = await fetch("http://localhost:3000/jobk")
+        const myData = await fetch(`http://localhost:3000/jobk?search=${title}`)
             .then((r)=>r.json())
             .then((json)=>json)
+        if(myData.length === 1){
+            if(myData[0].error){
+                const temp = document.createElement("div");
+                temp.innerHTML =`<h1>${myData[0].error}</h1>`;
+                st.append(temp);
+                return ;
+            }
+        }
         for(let i=0; i<myData.length; i++){
             const company = myData[i].company;
             const postTitle = myData[i].title;
@@ -37,10 +46,19 @@
         }
     }
     async function saramin (){
+        const title = document.getElementById("searchTitle").value;
         const st = document.getElementById("st");
-        const myData = await fetch("http://localhost:3000/saramin")
+        const myData = await fetch(`http://localhost:3000/saramin?search=${title}`)
             .then((r)=>r.json())
             .then((json)=>json)
+        if(myData.length === 1){
+            if(myData[0].error){
+                const temp = document.createElement("div");
+                temp.innerHTML =`<h1>${myData[0].error}</h1>`;
+                st.append(temp);
+                return ;
+            }
+        }
         for(let i =0; i<myData.length; i++){
             const company = myData[i].company;
             const cont =myData[i].cont;
@@ -71,6 +89,7 @@
 </script>
 <body>
     <h1> 크롤링 할거임</h1>
+    <input type="text" id="searchTitle" placeholder="검색할 검색어"/>
     <button onClick="jobk()"> 잡코리아 가져와 </button>
     <button onClick="saramin()"> 사람인 가져와 </button>
     <div>

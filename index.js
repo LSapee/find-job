@@ -1,12 +1,17 @@
 const express =require("express")
-const {Builder, Browser, By, Key, until,webdriver,chrome, logging} = require('selenium-webdriver');
+const {Builder, Browser, By, Key, until,webdriver, logging} = require('selenium-webdriver');
+const chrome = require("selenium-webdriver/chrome")
+const {query} = require("express");
 const app = express();
+// const router = require("./src/routes")
 const port = 3000;
 
-const screen = {
-    width: 640,
-    height: 480
-};
+let chromeOptions = new chrome.Options();
+chromeOptions.addArguments("--headless");
+chromeOptions.addArguments("--no-sandbox");
+
+
+// app.use("/Scraper",Scraper);
 const hasURL =async (Aelement,targetSite)=>{
     let urlTag = "";
     if(targetSite ==="jobK"){
@@ -63,16 +68,17 @@ const hasNextPage = async (driver,targetSite)=>{
 // 잡코리아
 app.get("/jobk",async (req,res)=>{
     // 브라우저 크롬 세팅
+    // let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
     let driver = await new Builder().forBrowser("chrome").build();
     // return 해줄 배열
-    let myList =await [];
+    let myList =[];
     // 구분자로 쓸 예정
     const thisSite ="jobK";
+    const keyword = req.query.search;
     try{
         // 페이지 로딩
         await driver.get("https://www.jobkorea.co.kr/")
         let searchInput = await driver.findElement(By.css("#stext"));
-        let keyword = "node";
         searchInput.sendKeys(keyword,Key.ENTER);
         // ok = 다음페이지 유무로 다음 버튼
         let ok = false;
@@ -104,6 +110,8 @@ app.get("/jobk",async (req,res)=>{
         // for(let i=0; i<myList.length; i++){
         //     console.log(myList[i]);
         // }
+    }catch(e){
+        myList.push({error:"검색 결과가 없습니다."});
     }finally{
         await driver.quit();
     }
@@ -112,16 +120,17 @@ app.get("/jobk",async (req,res)=>{
 // 사람인
 app.get("/saramin", async (req,res)=>{
     const myURL = "https://www.saramin.co.kr/zf_user/";
+    // let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
     let driver = await new Builder().forBrowser("chrome").build();
     const myList = await [];
     const thisSite = "saramIn";
+    const keyword = req.query.search;
     try{
         await driver.get(myURL)
         // 검색을 위한 input을 띄우는 버튼
         let searchBtn =await driver.findElement(By.css("#btn_search"));
         searchBtn.click();
         let searchInput = await driver.findElement(By.css("#ipt_keyword_recruit"));
-        let keyword = "node";
         searchInput.sendKeys(keyword,Key.ENTER);
         await driver.sleep(2000);
         await driver.wait(until.elementLocated(By.css(".type_box")),10000);
@@ -157,7 +166,6 @@ app.get("/saramin", async (req,res)=>{
                 let company = com.split("\n")[0];
                 // console.log(`postTitle:${postTitle}\npostUrl:${postUrl}\nendDate:${endDate}\ncompany:${company}\n기술:${skillStack}\n위치:${cont}\n경력사항:${requirements}`);
                 if(requirements.indexOf("신입")!==-1||(requirements.indexOf("1년")!==-1&&requirements.indexOf("11년")===-1)){
-                    console.log(requirements)
                     myList.push({
                         company:company,
                         postTitle:postTitle,
@@ -171,13 +179,13 @@ app.get("/saramin", async (req,res)=>{
             }
             ok = await hasNextPage(driver,thisSite);
         }while(ok);
+    }catch(e){
+        myList.push({error:"검색 결과가 없습니다."});
     }finally{
         await driver.quit();
     }
     res.send(myList);
 })
-
-
 //메인 페이지
 app.get("/",(req,res)=>{
     res.sendFile(__dirname+"/src/index.html")
@@ -187,3 +195,5 @@ app.get("/",(req,res)=>{
 app.listen(port,()=>{
     console.log("Hello Expree App");
 })
+
+module.exports = app;
