@@ -3,6 +3,7 @@ const {Builder, Browser, By, Key, until,webdriver, logging} = require('selenium-
 const chrome = require("selenium-webdriver/chrome")
 const {query} = require("express");
 const app = express();
+const cors =require("cors");
 // const router = require("./src/routes")
 const port = 3000;
 
@@ -10,7 +11,9 @@ let chromeOptions = new chrome.Options();
 chromeOptions.addArguments("--headless");
 chromeOptions.addArguments("--no-sandbox");
 
-
+app.use(cors({
+    origin: 'https://findjob.lsapee.com'
+}));
 // app.use("/Scraper",Scraper);
 const hasURL =async (Aelement,targetSite)=>{
     let urlTag = "";
@@ -68,8 +71,8 @@ const hasNextPage = async (driver,targetSite)=>{
 // 잡코리아
 app.get("/jobk",async (req,res)=>{
     // 브라우저 크롬 세팅
-    // let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
-    let driver = await new Builder().forBrowser("chrome").build();
+    let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
+    // let driver = await new Builder().forBrowser("chrome").build();
     // return 해줄 배열
     let myList =[];
     // 구분자로 쓸 예정
@@ -120,8 +123,8 @@ app.get("/jobk",async (req,res)=>{
 // 사람인
 app.get("/saramin", async (req,res)=>{
     const myURL = "https://www.saramin.co.kr/zf_user/";
-    // let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
-    let driver = await new Builder().forBrowser("chrome").build();
+    let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
+    // let driver = await new Builder().forBrowser("chrome").build();
     const myList = await [];
     const thisSite = "saramIn";
     const keyword = req.query.search;
@@ -131,7 +134,9 @@ app.get("/saramin", async (req,res)=>{
         let searchBtn =await driver.findElement(By.css("#btn_search"));
         searchBtn.click();
         let searchInput = await driver.findElement(By.css("#ipt_keyword_recruit"));
-        searchInput.sendKeys(keyword,Key.ENTER);
+        searchInput.sendKeys(keyword);
+        let searchBtn2 = await driver.findElement(By.css("#btn_search_recruit"));
+        searchBtn2.click();
         await driver.sleep(2000);
         await driver.wait(until.elementLocated(By.css(".type_box")),10000);
         const tabList = await driver.findElements(By.css(".type_box>a"));
@@ -189,7 +194,6 @@ app.get("/saramin", async (req,res)=>{
 //메인 페이지
 app.get("/",(req,res)=>{
     res.sendFile(__dirname+"/src/index.html")
-
 })
 
 app.listen(port,()=>{
