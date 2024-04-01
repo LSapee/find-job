@@ -21,7 +21,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_INSTANCE_IP }} << EOF
             source ~/.bashrc
-            export PATH="$PATH:/usr/local/bin"
+            export PATH="$PATH:/home/ubuntu/.nvm/versions/node/v18.20.0/bin"
             cd find-job/
             bash deploy/deploy.sh
           EOF
