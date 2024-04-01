@@ -72,7 +72,7 @@ const hasNextPage = async (driver,targetSite)=>{
 app.get("/jobk",async (req,res)=>{
     // 브라우저 크롬 세팅
     let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
-    // let driver = await new Builder().forBrowser("chrome").build();z
+    // let driver = await new Builder().forBrowser("chrome").build();
     // return 해줄 배열
     let myList =[];
     // 구분자로 쓸 예정
