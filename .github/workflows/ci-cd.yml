@@ -19,4 +19,8 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_INSTANCE_IP }} 'bash -s' < deploy/deploy.sh
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_INSTANCE_IP }} << EOF
+            source ~/.bashrc
+            cd /find-job/
+            bash deploy/deploy.sh
+          EOF
