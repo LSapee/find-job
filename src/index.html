@@ -13,7 +13,8 @@
       async function jobk(){
           const title = document.getElementById("searchTitle").value;
           const st = document.getElementById("st");
-        const myData = await fetch(`http://localhost:3000/jobk?search=${title}`)
+        // const myData = await fetch(`http://localhost:3000/jobk?search=${title}`)
+            const myData = await fetch(`https://findjob.lsapee.com/jobk?search=${title}`)
             .then((r)=>r.json())
             .then((json)=>json)
         if(myData.length === 1){
@@ -48,7 +49,8 @@
     async function saramin (){
         const title = document.getElementById("searchTitle").value;
         const st = document.getElementById("st");
-        const myData = await fetch(`http://localhost:3000/saramin?search=${title}`)
+        // const myData = await fetch(`http://localhost:3000/saramin?search=${title}`)
+        const myData = await fetch(`https://findjob.lsapee.com/saramin?search=${title}`)
             .then((r)=>r.json())
             .then((json)=>json)
         if(myData.length === 1){
