@@ -26,6 +26,7 @@
 
 -  github Actions 이용하여 구성
 -  main 브런치에 변동사항 있을시 github Actions 실행
+-  test 자동화 구현X
 
 
 ### 사람인,잡코리아 구인공고 너무 많아서 봐야할 공고만 줄이기 위해서 만든 것.
