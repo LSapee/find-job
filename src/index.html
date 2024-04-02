@@ -27,19 +27,25 @@
         }
         for(let i=0; i<myData.length; i++){
             const company = myData[i].company;
-            const postTitle = myData[i].title;
-            const requirements = myData[i].requirements;
-            const field = myData[i].field;
-            const postUrl = myData[i].url;
+            const postTitle = myData[i].postTitle;
+            const exp = myData[i].exp;
+            const edu = myData[i].edu;
+            const loc = myData[i].loc;
+            const stack = myData[i].stack;
+            const date = myData[i].date;
+            const postURL = myData[i].postURL;
             const temp = document.createElement("div");
             temp.innerHTML =
                 `
                 <li style="border : 1px solid black; ">
-                <a href="${postUrl}" target="_blank" rel="noopener noreferrer">
+                <a href="${postURL}" target="_blank" rel="noopener noreferrer">
                 <h2>${company}</h2>
                 <h3>${postTitle}</h3>
-                <span>${requirements}</span>
-                <span>${field}</span>
+                <span>경력 : ${exp}</span><br/>
+                <span>학력 : ${edu}</span><br/>
+                <span>지역 : ${loc}</span><br/>
+                <span>기술 스택 :${stack}</span><br/>
+                <span>마감일 :${date}</span>
                 </a>
                 </li>
             `
