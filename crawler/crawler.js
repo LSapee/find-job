@@ -137,7 +137,7 @@ const saramInCrawler = async (keyword)=>{
             }
             cnt++;
             ok = await hasNextPage(driver,thisSite);
-            if(cnt===10)break;
+            if(cnt===5)break;
         }while(ok);
     }catch(e){
         console.log(e);
