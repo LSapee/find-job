@@ -11,6 +11,6 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon ./src/index.js",
-    "test": "jest src/test/index.test.js"
+    "test": "jest test/index.test.js"
   }
 }
