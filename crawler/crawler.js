@@ -7,8 +7,8 @@ chromeOptions.addArguments("--headless");
 chromeOptions.addArguments("--no-sandbox");
 
 const jobKCrawler = async (keyword)=>{
-    // let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
-    let driver = await new Builder().forBrowser("chrome").build();
+    let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
+    // let driver = await new Builder().forBrowser("chrome").build();
     // return 해줄 배열
     const myList =[];
     const myURL="https://www.jobkorea.co.kr/";
@@ -38,16 +38,18 @@ const jobKCrawler = async (keyword)=>{
                 const postURL = await hasURL(elements[i],thisSite);
                 if(postTitle==="")break;
                 if(postURL===false)break;
-                myList.push({
-                    company,
-                    postTitle,
-                    exp,
-                    edu,
-                    loc,
-                    skillStacks,
-                    endDate,
-                    postURL
-                });
+                if(exp.indexOf("1년")!=-1 ||exp.indexOf("신입")!=-1){
+                    myList.push({
+                        company,
+                        postTitle,
+                        exp,
+                        edu,
+                        loc,
+                        skillStacks,
+                        endDate,
+                        postURL
+                    });
+                }
             }
             ok = await hasNextPage(driver,thisSite);
         }while(ok)
@@ -63,8 +65,8 @@ const jobKCrawler = async (keyword)=>{
 
 const saramInCrawler = async (keyword)=>{
     const myURL = "https://www.saramin.co.kr/zf_user/";
-    let driver = await new Builder().forBrowser("chrome").build();
-    // let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
+    // let driver = await new Builder().forBrowser("chrome").build();
+    let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
     const myList = await [];
     const thisSite = "saramIn";
     try{
@@ -77,7 +79,7 @@ const saramInCrawler = async (keyword)=>{
         let searchBtn2 = await driver.findElement(By.css("#btn_search_recruit"));
         driver.sleep(1000);
         searchBtn2.click();
-        await driver.sleep(2000);
+        await driver.sleep(1000);
         await driver.wait(until.elementLocated(By.css(".type_box")),10000);
         const tabList = await driver.findElements(By.css(".type_box>a"));
         for(let i=0; i<tabList.length; i++){
@@ -90,11 +92,9 @@ const saramInCrawler = async (keyword)=>{
         let ok = false;
         do{
             await driver.wait(until.elementLocated(By.css(".item_recruit")),10000);
-            await driver.sleep(1000);
             // 목록 가져오기
             let elements = await driver.findElements(By.css(".item_recruit"));
             await driver.wait(until.elementLocated(By.css(".pagination")),10000);
-            await driver.sleep(1000);
             for(let i=0; i<elements.length; i++){
                 const post = await elements[i].findElement(By.css(".area_job"));
                 const com = await elements[i].findElement(By.css(".area_corp")).getText();
@@ -117,16 +117,18 @@ const saramInCrawler = async (keyword)=>{
                 }
                 skillStacks.length = skillStacks.length-1;
                 let company = com.split("\n")[0];
-                myList.push({
-                    company,
-                    postTitle,
-                    exp,
-                    edu,
-                    loc,
-                    skillStacks,
-                    endDate,
-                    postURL
-                })
+                if(exp.indexOf("1년")!=-1 ||exp.indexOf("신입")!=-1){
+                    myList.push({
+                        company,
+                        postTitle,
+                        exp,
+                        edu,
+                        loc,
+                        skillStacks,
+                        endDate,
+                        postURL
+                    });
+                }
             }
             ok = await hasNextPage(driver,thisSite);
         }while(ok);
