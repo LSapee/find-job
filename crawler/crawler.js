@@ -67,20 +67,22 @@ const jobKCrawler = async (keyword)=>{
 
 const saramInCrawler = async (keyword)=>{
     const myURL = "https://www.saramin.co.kr/zf_user/";
-    // let driver = await new Builder().forBrowser("chrome").build();
-    let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
+    let driver = await new Builder().forBrowser("chrome").build();
+    // let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
     const myList = await [];
     const thisSite = "saramIn";
     console.log("saramIn 크롤링 시작합니다.")
     try{
         await driver.get(myURL)
         // 검색을 위한 input을 띄우는 버튼
+        await driver.wait(until.elementLocated(By.css("#btn_search")),10000)
         let searchBtn =await driver.findElement(By.css("#btn_search"));
         searchBtn.click();
+        await driver.wait(until.elementLocated(By.css("#ipt_keyword_recruit")),10000)
         let searchInput = await driver.findElement(By.css("#ipt_keyword_recruit"));
         searchInput.sendKeys(keyword);
         let searchBtn2 = await driver.findElement(By.css("#btn_search_recruit"));
-        driver.sleep(1000);
+        await driver.sleep(1000);
         searchBtn2.click();
         await driver.sleep(1000);
         await driver.wait(until.elementLocated(By.css(".type_box")),10000);
@@ -97,7 +99,7 @@ const saramInCrawler = async (keyword)=>{
         do{
             await driver.wait(until.elementLocated(By.css(".item_recruit")),10000);
             // 목록 가져오기
-            driver.sleep(1000);
+            await driver.sleep(1000);
             let elements = await driver.findElements(By.css(".item_recruit"));
             await driver.wait(until.elementLocated(By.css(".pagination")),10000);
             for(let i=0; i<elements.length; i++){
