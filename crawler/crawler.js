@@ -97,6 +97,7 @@ const saramInCrawler = async (keyword)=>{
         do{
             await driver.wait(until.elementLocated(By.css(".item_recruit")),10000);
             // 목록 가져오기
+            driver.sleep(1000);
             let elements = await driver.findElements(By.css(".item_recruit"));
             await driver.wait(until.elementLocated(By.css(".pagination")),10000);
             for(let i=0; i<elements.length; i++){
