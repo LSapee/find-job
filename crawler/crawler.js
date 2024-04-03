@@ -15,6 +15,7 @@ const jobKCrawler = async (keyword)=>{
     // 구분자로 쓸 예정
     const thisSite ="jobK";
     console.log("jobK 크롤링 시작합니다.");
+    let cnt =0;
     try{
         // 페이지 로딩
         await driver.get(myURL)
@@ -51,7 +52,9 @@ const jobKCrawler = async (keyword)=>{
                     });
                 }
             }
+            cnt++;
             ok = await hasNextPage(driver,thisSite);
+            if(cnt===10)break;
         }while(ok)
     }catch(e){
         myList.length=0;
@@ -59,7 +62,6 @@ const jobKCrawler = async (keyword)=>{
     }finally{
         await driver.quit();
     }
-    console.log(myList);
     return myList;
 }
 
@@ -69,6 +71,7 @@ const saramInCrawler = async (keyword)=>{
     let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
     const myList = await [];
     const thisSite = "saramIn";
+    console.log("saramIn 크롤링 시작합니다.")
     try{
         await driver.get(myURL)
         // 검색을 위한 input을 띄우는 버튼
@@ -90,6 +93,7 @@ const saramInCrawler = async (keyword)=>{
             }
         }
         let ok = false;
+        let cnt= 0;
         do{
             await driver.wait(until.elementLocated(By.css(".item_recruit")),10000);
             // 목록 가져오기
@@ -130,7 +134,9 @@ const saramInCrawler = async (keyword)=>{
                     });
                 }
             }
+            cnt++;
             ok = await hasNextPage(driver,thisSite);
+            if(cnt===10)break;
         }while(ok);
     }catch(e){
         console.log(e);
