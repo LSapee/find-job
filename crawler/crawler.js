@@ -66,9 +66,9 @@ const jobKCrawler = async (keyword)=>{
 }
 
 const saramInCrawler = async (keyword)=>{
-    const myURL = "https://www.saramin.co.kr/zf_user/";
-    let driver = await new Builder().forBrowser("chrome").build();
-    // let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
+    const myURL = `https://www.saramin.co.kr/zf_user/search?search_area=main&search_done=y&search_optional_item=n&searchType=search&searchword=${keyword}`;
+    // let driver = await new Builder().forBrowser("chrome").build();
+    let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
     const myList = await [];
     const thisSite = "saramIn";
     console.log("saramIn 크롤링 시작합니다.")
