@@ -74,4 +74,26 @@ const hasError = (myList) =>{
     return false;
 }
 
-module.exports = {hasElement,hasURL,hasNextPage,hasError}
+const exps = (exp) =>{
+    const expList  =[];
+    const nToMRegex = /경력 (\d+)~(\d+)년/;
+    const overN = /경력(\d+)년↑/;
+    if(exp.match(nToMRegex)){
+        const match = exp.match(nToMRegex);
+        const n = match[1]
+        const m = match[2];
+        console.log("n : ",n,"m :",m);
+        for(let i=n; i<=m; i++) expList.push(`${i}년`);
+    }
+    if(exp.match(overN)){
+        const match = exp.match(overN);
+        const n = match[1];
+        console.log(n);
+        for(let i=n; i<=10; i++) expList.push(`${i}년`);
+    }
+    if(expList.length===0) expList.push(exp);
+    return expList;
+}
+
+
+module.exports = {hasElement,hasURL,hasNextPage,hasError,exps}

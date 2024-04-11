@@ -1,6 +1,6 @@
 const {Builder, Browser, By, Key, until,webdriver, logging} = require('selenium-webdriver');
 const chrome = require("selenium-webdriver/chrome");
-const {hasElement,hasURL,hasNextPage,hasError} = require("../utils/utils");
+const {hasElement,hasURL,hasNextPage,hasError,exps} = require("../utils/utils");
 
 let chromeOptions = new chrome.Options();
 chromeOptions.addArguments("--headless");
@@ -15,7 +15,6 @@ const jobKCrawler = async (keyword)=>{
     // 구분자로 쓸 예정
     const thisSite ="jobK";
     console.log("jobK 크롤링 시작합니다.");
-    let cnt =0;
     try{
         // 페이지 로딩
         await driver.get(myURL)
@@ -31,7 +30,7 @@ const jobKCrawler = async (keyword)=>{
                 const post = await elements[i];
                 const company = await hasElement(post,"a.name.dev_view");
                 const postTitle = await hasElement(post,"a.title.dev_view");
-                const exp = await hasElement(post,"span.exp")
+                let exp = await hasElement(post,"span.exp")
                 const edu = await hasElement(post,"span.edu")
                 const loc = await hasElement(post,"span.loc.long")
                 const endDate = await hasElement(post,"span.date")
@@ -39,22 +38,19 @@ const jobKCrawler = async (keyword)=>{
                 const postURL = await hasURL(elements[i],thisSite);
                 if(postTitle==="")break;
                 if(postURL===false)break;
-                if(exp.indexOf("1년")!=-1 ||exp.indexOf("신입")!=-1){
-                    myList.push({
-                        company,
-                        postTitle,
-                        exp,
-                        edu,
-                        loc,
-                        skillStacks,
-                        endDate,
-                        postURL
-                    });
-                }
+                exp =exps(exp);
+                myList.push({
+                    company,
+                    postTitle,
+                    exp,
+                    edu,
+                    loc,
+                    skillStacks,
+                    endDate,
+                    postURL
+                });
             }
-            cnt++;
             ok = await hasNextPage(driver,thisSite);
-            if(cnt===10)break;
         }while(ok)
     }catch(e){
         myList.length=0;
@@ -66,9 +62,9 @@ const jobKCrawler = async (keyword)=>{
 }
 
 const saramInCrawler = async (keyword)=>{
-    const myURL = `https://www.saramin.co.kr/zf_user/search?search_area=main&search_done=y&search_optional_item=n&searchType=search&searchword=${keyword}`;
-    // let driver = await new Builder().forBrowser("chrome").build();
-    let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
+    const myURL = `https://www.saramin.co.kr/zf_user`;
+    let driver = await new Builder().forBrowser("chrome").build();
+    // let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
     const myList = await [];
     const thisSite = "saramIn";
     console.log("saramIn 크롤링 시작합니다.")
@@ -95,7 +91,6 @@ const saramInCrawler = async (keyword)=>{
             }
         }
         let ok = false;
-        let cnt= 0;
         do{
             await driver.wait(until.elementLocated(By.css(".item_recruit")),10000);
             // 목록 가져오기
@@ -111,7 +106,7 @@ const saramInCrawler = async (keyword)=>{
                 let requirements = await post.findElement(By.css(".job_condition")).getText();// 경력 학력
                 requirements = requirements.split("\n");
                 const loc = requirements[0];
-                const exp = requirements[1];
+                const exp = exps(requirements[1]);
                 const edu = requirements[2];
                 let temp = [];
                 for(let i =1; i<requirements.length; i++)temp.push(requirements[i]);
@@ -124,22 +119,18 @@ const saramInCrawler = async (keyword)=>{
                 }
                 skillStacks.length = skillStacks.length-1;
                 let company = com.split("\n")[0];
-                if(exp.indexOf("1년")!=-1 ||exp.indexOf("신입")!=-1){
-                    myList.push({
-                        company,
-                        postTitle,
-                        exp,
-                        edu,
-                        loc,
-                        skillStacks,
-                        endDate,
-                        postURL
-                    });
-                }
+                myList.push({
+                    company,
+                    postTitle,
+                    exp,
+                    edu,
+                    loc,
+                    skillStacks,
+                    endDate,
+                    postURL
+                });
             }
-            cnt++;
             ok = await hasNextPage(driver,thisSite);
-            if(cnt===5)break;
         }while(ok);
     }catch(e){
         console.log(e);
@@ -152,4 +143,27 @@ const saramInCrawler = async (keyword)=>{
     // makeCSV(thisSite,myList);
 }
 
+const incruitCrawler = async (keyword)=>{
+    const myURL = `https://www.incruit.com/`;
+    // let driver = await new Builder().forBrowser("chrome").build();
+    let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
+    const myList = await [];
+    const thisSite = "Incruit";
+    console.log("Incruit 크롤링 시작합니다.")
+    try {
+        await driver.get(myURL)
+        let searchInput = await driver.findElement(By.css("#kw"));
+        searchInput.sendKeys(keyword,Key.ENTER);
+        const alls = await driver.findElements
+        const com = await driver.findElement(By.css(""))
+    }catch(e){
+        console.log(e);
+        myList.length =0;
+        myList.push({error:"검색 결과가 없습니다."});
+    }finally{
+        await driver.quit();
+    }
+    return myList;
+    // makeCSV(thisSite,myList);
+}
 module.exports = {jobKCrawler,saramInCrawler}
