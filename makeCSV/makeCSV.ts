@@ -1,19 +1,18 @@
 import fs from "fs";
 import path from "path";
+import {MyList} from "../types/myList";
 
-const makeCSV = (targetSite,myList)=>{
-    let csvContent = "";
+const makeCSV = (targetSite:string,myList:MyList[]):void=>{
+    let csvContent:string = "회사명,공고제목,경력,학력,지역,기술스택,마감일,링크\n";
     let fileName = targetSite;
     if(targetSite==="jobK"){
-        csvContent = "회사명,공고제목,지역,분야,링크\n";
         myList.forEach(item=>{
-            let row = `"${item.company}","${item.title}","${item.requirements}","${item.field}","${item.url}"`;
+            let row = `"${item.company}","${item.postTitle}","${item.exp}","${item.edu}","${item.loc}","${item.skillStacks}","${item.endDate}","${item.postURL}"`;
             csvContent += row + '\n';
         })
     }else{
-        csvContent="회사명,공고제목,링크,마감일,기술스택,지역,특이사항\n";
         myList.forEach(item=>{
-            let row = `"${item.company}","${item.postTitle}","${item.postUrl}","${item.endDate}","${item.skillStack}","${item.cont}","${item.requirements}"`;
+            let row = `"${item.company}","${item.postTitle}","${item.exp}","${item.edu}","${item.loc}","${item.skillStacks}","${item.endDate}","${item.postURL}"`;
             csvContent += row + '\n';
         })
     }
