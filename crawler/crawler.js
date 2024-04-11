@@ -1,12 +1,12 @@
 const {Builder, Browser, By, Key, until,webdriver, logging} = require('selenium-webdriver');
 const chrome = require("selenium-webdriver/chrome");
-const {hasElement,hasURL,hasNextPage,hasError,exps} = require("../utils/utils");
+const {hasElement,hasURL,hasNextPage,hasError,exps,expOk} = require("../utils/utils");
 
 let chromeOptions = new chrome.Options();
 chromeOptions.addArguments("--headless");
 chromeOptions.addArguments("--no-sandbox");
 
-const jobKCrawler = async (keyword)=>{
+const jobKCrawler = async (keyword,myExp,expAll)=>{
     let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
     // let driver = await new Builder().forBrowser("chrome").build();
     // return 해줄 배열
@@ -39,16 +39,21 @@ const jobKCrawler = async (keyword)=>{
                 if(postTitle==="")break;
                 if(postURL===false)break;
                 exp =exps(exp);
-                myList.push({
-                    company,
-                    postTitle,
-                    exp,
-                    edu,
-                    loc,
-                    skillStacks,
-                    endDate,
-                    postURL
-                });
+                const expT = expOk(exp,myExp,expAll);
+
+
+                if(expT){
+                    myList.push({
+                        company,
+                        postTitle,
+                        exp,
+                        edu,
+                        loc,
+                        skillStacks,
+                        endDate,
+                        postURL
+                    });
+                }
             }
             ok = await hasNextPage(driver,thisSite);
         }while(ok)
@@ -61,7 +66,7 @@ const jobKCrawler = async (keyword)=>{
     return myList;
 }
 
-const saramInCrawler = async (keyword)=>{
+const saramInCrawler = async (keyword,myExp,expAll)=>{
     const myURL = `https://www.saramin.co.kr/zf_user`;
     let driver = await new Builder().forBrowser("chrome").build();
     // let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
@@ -119,16 +124,19 @@ const saramInCrawler = async (keyword)=>{
                 }
                 skillStacks.length = skillStacks.length-1;
                 let company = com.split("\n")[0];
-                myList.push({
-                    company,
-                    postTitle,
-                    exp,
-                    edu,
-                    loc,
-                    skillStacks,
-                    endDate,
-                    postURL
-                });
+                const expT = expOk(exp,myExp,expAll);
+                if(expT){
+                    myList.push({
+                        company,
+                        postTitle,
+                        exp,
+                        edu,
+                        loc,
+                        skillStacks,
+                        endDate,
+                        postURL
+                    });
+                }
             }
             ok = await hasNextPage(driver,thisSite);
         }while(ok);

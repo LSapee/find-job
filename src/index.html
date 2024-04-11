@@ -12,11 +12,13 @@
     ul{padding:0;}
 </style>
 <script>
-      async function jobk(){
+    async function jobk(){
           const title = document.getElementById("searchTitle").value;
           const st = document.getElementById("st");
-        // const myData = await fetch(`http://localhost:3000/jobk?search=${title}`)
-            const myData = await fetch(`https://findjob.lsapee.com/jobk?search=${title}`)
+          const myExp =document.getElementById("exp").value;
+          const expAll = document.getElementById("expAll").checked;
+        // const myData = await fetch(`http://localhost:3000/jobk?search=${title}&expAll=${expAll}&exp=${myExp}`)
+            const myData = await fetch(`https://findjob.lsapee.com/jobk?search=${title}&expAll=${expAll}&exp=${myExp}`)
             .then((r)=>r.json())
             .then((json)=>json)
         if(myData.length === 1){
@@ -57,8 +59,10 @@
     async function saramin (){
         const title = document.getElementById("searchTitle").value;
         const st = document.getElementById("st");
-        // const myData = await fetch(`http://localhost:3000/saramin?search=${title}`)
-        const myData = await fetch(`https://findjob.lsapee.com/saramin?search=${title}`)
+        const myExp =document.getElementById("exp").value;
+        const expAll = document.getElementById("expAll").checked;
+        // const myData = await fetch(`http://localhost:3000/saramin?search=${title}&expAll=${expAll}&exp=${myExp}`)
+        const myData = await fetch(`https://findjob.lsapee.com/saramin?search=${title}&expAll=${expAll}&exp=${myExp}`)
             .then((r)=>r.json())
             .then((json)=>json)
         if(myData.length === 1){
@@ -105,10 +109,46 @@
             <div class="col-2"></div>
             <div class="col-8">
                 <h1 style="text-align: center">구인구직 크롤링</h1>
-                <input type="text" id="searchTitle" class="form-control"  placeholder="검색할 검색어" style="margin-bottom: 10px">
-                <button onClick="jobk()" class="btn btn-primary"> 잡코리아 가져와 </button>
-                <button onClick="saramin()" class="btn btn-info"> 사람인 가져와 </button>
-                <div>
+                <input type="text" id="searchTitle" class="form-control"  placeholder="검색할 검색어" style="margin-bottom: 10px"/>
+                <div class="row">
+                    <div class="col-2">
+                        <select class="form-select" id="exp">
+                            <option value="신입">신입</option>
+                            <option value="1">1년</option>
+                            <option value="2">2년</option>
+                            <option value="3">3년</option>
+                            <option value="4">4년</option>
+                            <option value="5">5년</option>
+                            <option value="6">6년</option>
+                            <option value="7">7년</option>
+                            <option value="8">8년</option>
+                            <option value="9">9년</option>
+                            <option value="10">10년 이상</option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-check form-switch">
+                        <input type="checkbox" class="form-check-input" id="expAll">
+                            <label class="form-check-label" for="expAll" >경력무관</label>
+                        </div>
+                    </div>
+                    <div class="col-4"></div>
+                    <div class="col-4" >
+                        <div class="row">
+                            <div class="col-6">
+                                <button onClick="jobk()" class="btn btn-primary" style="width: 100%"> 잡코리아 가져와 </button>
+                            </div>
+                            <div class="col-6">
+                                <button onClick="saramin()" class="btn btn-info"style="width: 100%"> 사람인 가져와 </button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div style="margin-top: 10px;">
                     <ul id="st">
 
                     </ul>

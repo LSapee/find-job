@@ -74,6 +74,7 @@ const hasError = (myList) =>{
     return false;
 }
 
+// 경력을 n~m년차를 (1년,2년,3년)으로 나누기 또는 n년 이상을 n~10(5년,6년,7년 ...)으로 바꾸는 작업
 const exps = (exp) =>{
     const expList  =[];
     const nToMRegex = /경력 (\d+)~(\d+)년/;
@@ -82,18 +83,23 @@ const exps = (exp) =>{
         const match = exp.match(nToMRegex);
         const n = match[1]
         const m = match[2];
-        console.log("n : ",n,"m :",m);
         for(let i=n; i<=m; i++) expList.push(`${i}년`);
     }
     if(exp.match(overN)){
         const match = exp.match(overN);
         const n = match[1];
-        console.log(n);
         for(let i=n; i<=10; i++) expList.push(`${i}년`);
     }
     if(expList.length===0) expList.push(exp);
     return expList;
 }
+// 경력 조건이 충족하는가
+const expOk = (exp,myExp,expAll) =>{
+    if(expAll===true&&exp.includes("경력무관"))return true;
+    if(myExp==="신입"&&exp.includes("신입"))return true;
+    if(exp.includes(`${myExp}년`)) return true;
+    return false;
+}
 
 
-module.exports = {hasElement,hasURL,hasNextPage,hasError,exps}
+module.exports = {hasElement,hasURL,hasNextPage,hasError,exps,expOk}

@@ -12,14 +12,18 @@ app.use(cors({
 app.get("/jobk",async (req,res)=>{
     // 검색한 단어
     const keyword = req.query.search;
-    const myList = await jobKCrawler(keyword);
+    const expAll = req.query.expAll;
+    const myExp = req.query.exp
+    const myList = await jobKCrawler(keyword,myExp,expAll);
     res.send(myList);
 })
 // 사람인
 app.get("/saramin", async (req,res)=>{
     //검색한 단어
     const keyword = req.query.search;
-    const myList = await saramInCrawler(keyword);
+    const expAll = req.query.expAll;
+    const myExp = req.query.exp
+    const myList = await saramInCrawler(keyword,myExp,expAll);
     res.send(myList);
 })
 //메인 페이지
