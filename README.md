@@ -1,8 +1,15 @@
 
-[사이트 바로가기](https://findjob.lsapee.com)
+[사이트 바로가기](https://lsapee.com)
 
 ### 사람인,잡코리아 구인공고 너무 많아서 봐야할 공고만 줄이기 위해서 만든 것.
 
+### 로컬 사용법
+ - clone 혹은 Download 하기
+ - npm install (node가 없다면 node 설치)
+ - 현재 크롬브라우저의 버전 알아보기
+ - 크롬브라우저 버전에 따른 크롬드라이버 다운로드 -[크롬브라우저 다운링크](https://chromedriver.chromium.org/downloads/version-selection)
+ - 크롬 드라이버를 PATH에 추가하기
+ - 잡코리아,사람인에 검색하고자 하는 검색어 입력하고 경력선택 및 버튼 클릭
 ## 잡코리아 및 사람인 구인공고 크롤링
 
  - 키워드 입력시 검색하여 보여주기
