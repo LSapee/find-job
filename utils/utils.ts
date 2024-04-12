@@ -65,6 +65,7 @@ const exps = (exp:string):string[] =>{
     const expList:string[]  =[];
     const nToMRegex:RegExp = /경력 (\d+)~(\d+)년/;
     const overN:RegExp = /경력(\d+)년↑/;
+    if(exp.includes("경력무관"))expList.push("경력무관");
     if(exp.match(nToMRegex)){
         const match:RegExpMatchArray|null = exp.match(nToMRegex);
         if(match!==null){
@@ -80,17 +81,27 @@ const exps = (exp:string):string[] =>{
             for (let i:number = n; i <= 10; i++) expList.push(`${i}년`);
         }
     }
-    if(exp ==="신입·경력"){expList.push("신입");expList.push("경력");}
-    if(expList.length===0) expList.push(exp);
+    if(exp.includes("신입·경력")){expList.push("신입");expList.push("경력");}
+    else if(exp.includes("신입")){expList.push("신입");}
+    if(expList.length===0) expList.push(`정규화 되지 않은 경력 ${exp}`);
     return expList;
 }
 // 경력 조건이 충족하는가
-const expOk = (exp:string,myExp:string,expAll:boolean) =>{
-    if(expAll===true&&exp.includes("경력무관"))return true;
+const expOk = (exp:string,myExp:string,expAllOk:boolean) =>{
+    if(myExp=="전부") return true;
+    if(expAllOk===true&&exp.includes("경력무관"))return true;
     if(myExp==="신입"&&exp.includes("신입"))return true;
     if(exp.includes(`${myExp}년`)) return true;
     return false;
 }
 
+const companyReNamed = (company:string) : string=>{
+    let companyName = company.replace("㈜","");
+    companyName = companyName.replace("(주)","");
+    companyName = companyName.replace("주식회사","");
+    companyName = companyName.replace(/ /gi,"");
+    return companyName;
+}
 
-module.exports = {hasElement,hasURL,hasNextPage,exps,expOk}
+
+module.exports = {hasElement,hasURL,hasNextPage,exps,expOk,companyReNamed}

@@ -1,16 +1,22 @@
 import {Builder, Browser, By, Key, until, WebDriver, logging, WebElement} from 'selenium-webdriver'
 import chrome from "selenium-webdriver/chrome"
 import {MyList} from "../types/myList";
-const {hasElement,hasURL,hasNextPage,exps,expOk} = require("../utils/utils");
+const {hasElement,hasURL,hasNextPage,exps,expOk,companyReNamed} = require("../utils/utils");
+const {makeCSV} = require("../makeCSV/makeCSV")
 
 let chromeOptions:chrome.Options = new chrome.Options();
 chromeOptions.addArguments("--headless");
-chromeOptions.addArguments("--no-sandbox");
+chromeOptions.addArguments("window-size=1920x1080");
+chromeOptions.addArguments("disable-gpu");
+chromeOptions.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
+chromeOptions.excludeSwitches('enable-automation');
+chromeOptions.addArguments('--disable-blink-features=AutomationControlled');
 
-const jobKCrawler = async (keyword:string,myExp:string,expAll:boolean)=>{
+const jobKCrawler = async (keyword:string,myExp:string,expAll:string)=>{
     let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
     // let driver = await new Builder().forBrowser("chrome").build();
     // return 해줄 배열
+    const expAllOk :boolean = expAll.includes("true") ? true:false;
     const myList:MyList[] =[];
     const myURL:string="https://www.jobkorea.co.kr/";
     // 구분자로 쓸 예정
@@ -38,13 +44,14 @@ const jobKCrawler = async (keyword:string,myExp:string,expAll:boolean)=>{
                 const endDate:string = await hasElement(post,"span.date")
                 const skillStacks:string = await hasElement(post,"p.etc")
                 const postURL:string|boolean = await hasURL(elements[i],thisSite);
+                const companyName:string = companyReNamed(company);
                 if(postTitle==="")break;
                 if(postURL===false)break;
                 const expArr:string[] =exps(exp);
-                const expT = expOk(exp,myExp,expAll);
+                const expT = expOk(exp,myExp,expAllOk);
                 if(expT){
                     myList.push({
-                        company,
+                        company:companyName,
                         postTitle,
                         exp:expArr,
                         edu,
@@ -63,16 +70,18 @@ const jobKCrawler = async (keyword:string,myExp:string,expAll:boolean)=>{
     }finally{
         await driver.quit();
     }if(hasError) return [{error:"검색 결과가 없습니다."}];
+    else makeCSV(thisSite,myList,keyword);
     return myList;
 }
 
-const saramInCrawler = async (keyword:string,myExp:string,expAll:boolean) :Promise<MyList[]|object[]>=>{
+const saramInCrawler = async (keyword:string,myExp:string,expAll:string) :Promise<MyList[]|object[]>=>{
     const myURL = `https://www.saramin.co.kr/zf_user`;
-    let driver = await new Builder().forBrowser("chrome").build();
-    // let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
+    // let driver = await new Builder().forBrowser("chrome").build();
+    let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
     const myList:MyList[] = [];
     const thisSite:string = "saramIn";
     let hasError:boolean =false;
+    const expAllOk :boolean = expAll.includes("true") ? true:false;
     console.log("saramIn 크롤링 시작합니다.")
     try{
         await driver.get(myURL)
@@ -121,10 +130,11 @@ const saramInCrawler = async (keyword:string,myExp:string,expAll:boolean) :Promi
                     if(z!==skillStack.length-1)skillStacks+= ",";
                 }
                 const company:string = com.split("\n")[0];
-                const expT:string[] = expOk(exp,myExp,expAll);
+                const companyName :string = companyReNamed(company);
+                const expT:string[] = expOk(exp,myExp,expAllOk);
                 if(expT){
                     myList.push({
-                        company,
+                        company:companyName,
                         postTitle,
                         exp,
                         edu,
@@ -144,6 +154,7 @@ const saramInCrawler = async (keyword:string,myExp:string,expAll:boolean) :Promi
         await driver.quit();
     }
     if(hasError) return [{error:"검색 결과가 없습니다."}];
+    // else makeCSV(thisSite,myList,keyword);
     return myList;
 }
 
