@@ -5,12 +5,8 @@ const app = express();
 const {jobKCrawler,saramInCrawler} = require("./crawler/crawler");
 const port = 3000;
 
-
-
-
-
 app.use(cors({
-    origin: 'https://findjob.lsapee.com'
+    origin: '*',
 }));
 
 // 잡코리아
