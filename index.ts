@@ -6,7 +6,7 @@ const {jobKCrawler,saramInCrawler} = require("./crawler/crawler");
 const port = 3000;
 
 app.use(cors({
-    origin: '*',
+    origin:"*"
 }));
 
 // 잡코리아
@@ -14,7 +14,6 @@ app.get("/jobk",async (req:Request,res:Response)=>{
     // 검색한 단어
     const {search:keyword,expAll:expAll,exp:myExp} = req.query;
     const myList = await jobKCrawler(keyword,myExp,expAll);
-
     res.send(myList);
 })
 // 사람인
