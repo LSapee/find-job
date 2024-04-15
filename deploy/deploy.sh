@@ -6,6 +6,9 @@ git pull origin main
 # Node.js 의존성 설치
 npm install
 
+# prisma
+npx prisma generate
+
 # PM2를 사용하여 애플리케이션 재시작
 pm2 restart find-job
 

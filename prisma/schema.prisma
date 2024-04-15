@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Job_Posting{
+  id Int @id @default(autoincrement()) @map("posting_id")
+  company_name String
+  title String
+  experience_level String
+  education_level String
+  tech_stack String
+  closing_date String
+  link String
+  Job_Keywords Job_Keywords[]
+}
+model Keywords{
+  id Int @id @default(autoincrement()) @map("keyword_id")
+  keyword String @unique
+  Job_Keywords Job_Keywords[]
+}
+
+model Job_Keywords{
+  keyword_id Int
+  posting_id Int
+  posting Job_Posting @relation(fields: [posting_id], references: [id])
+  keyword Keywords @relation(fields: [keyword_id], references: [id])
+  @@id([posting_id, keyword_id])
+}

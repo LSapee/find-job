@@ -3,12 +3,16 @@ import chrome from "selenium-webdriver/chrome"
 import {MyList} from "../types/myList";
 const {hasElement,hasURL,hasNextPage,exps,expOk,companyReNamed} = require("../utils/utils");
 const {makeCSV} = require("../makeCSV/makeCSV")
+const {crawlerRepository} =require("../Repository/test.Repository");
 
 let chromeOptions:chrome.Options = new chrome.Options();
+// headless 모드 실행
 chromeOptions.addArguments("--headless");
 chromeOptions.addArguments("window-size=1920x1080");
 chromeOptions.addArguments("disable-gpu");
+// 사용자 에이전트 변경
 chromeOptions.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
+// WebDriver 속성 제거
 chromeOptions.excludeSwitches('enable-automation');
 chromeOptions.addArguments('--disable-blink-features=AutomationControlled');
 
@@ -62,6 +66,7 @@ const jobKCrawler = async (keyword:string,myExp:string,expAll:string)=>{
                     });
                 }
             }
+            break;
             ok = await hasNextPage(driver,thisSite);
         }while(ok)
     }catch(e){
@@ -69,8 +74,11 @@ const jobKCrawler = async (keyword:string,myExp:string,expAll:string)=>{
         hasError=true;
     }finally{
         await driver.quit();
-    }if(hasError) return [{error:"검색 결과가 없습니다."}];
-    else makeCSV(thisSite,myList,keyword);
+    }
+    // if(hasError) return [{error:"검색 결과가 없습니다."}];
+    // else makeCSV(thisSite,myList,keyword);
+    const result = await crawlerRepository(myList,keyword);
+    console.log("jobK 크롤링 종료합니다.");
     return myList;
 }
 
@@ -155,6 +163,7 @@ const saramInCrawler = async (keyword:string,myExp:string,expAll:string) :Promis
     }
     if(hasError) return [{error:"검색 결과가 없습니다."}];
     // else makeCSV(thisSite,myList,keyword);
+    console.log("saramIn 크롤링 종료합니다.");
     return myList;
 }
 

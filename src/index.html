@@ -17,8 +17,8 @@
           const st = document.getElementById("st");
           const myExp =document.getElementById("exp").value;
           const expAll = document.getElementById("expAll").checked;
-        // const myData = await fetch(`http://localhost:3000/jobk?search=${title}&expAll=${expAll}&exp=${myExp}`)
-            const myData = await fetch(`https://findjob.lsapee.com/jobk?search=${title}&expAll=${expAll}&exp=${myExp}`)
+        const myData = await fetch(`http://localhost:3000/jobk?search=${title}&expAll=${expAll}&exp=${myExp}`)
+            // const myData = await fetch(`https://findjob.lsapee.com/jobk?search=${title}&expAll=${expAll}&exp=${myExp}`)
             .then((r)=>r.json())
             .then((json)=>json)
         if(myData.length === 1){
@@ -61,8 +61,8 @@
         const st = document.getElementById("st");
         const myExp =document.getElementById("exp").value;
         const expAll = document.getElementById("expAll").checked;
-        // const myData = await fetch(`http://localhost:3000/saramin?search=${title}&expAll=${expAll}&exp=${myExp}`)
-        const myData = await fetch(`https://findjob.lsapee.com/saramin?search=${title}&expAll=${expAll}&exp=${myExp}`)
+        const myData = await fetch(`http://localhost:3000/saramin?search=${title}&expAll=${expAll}&exp=${myExp}`)
+        // const myData = await fetch(`https://findjob.lsapee.com/saramin?search=${title}&expAll=${expAll}&exp=${myExp}`)
             .then((r)=>r.json())
             .then((json)=>json)
         if(myData.length === 1){
@@ -113,6 +113,7 @@
                 <div class="row">
                     <div class="col-2">
                         <select class="form-select" id="exp">
+                            <option value="전부">전부</option>
                             <option value="신입">신입</option>
                             <option value="1">1년</option>
                             <option value="2">2년</option>

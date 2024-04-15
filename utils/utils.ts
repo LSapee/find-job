@@ -5,6 +5,7 @@ const hasElement = async (myElement:WebElement,myTag:[]):Promise<string>=>{
     try{
         ans = await myElement.findElement(By.css(`${myTag}`)).getText();
     }catch(e){
+        return ans;
     }
     return ans;
 }
@@ -23,15 +24,16 @@ const hasURL =async (Aelement:WebElement,targetSite:string):Promise<boolean|stri
 }
 
 // 다음 페이지로 가는 버튼 유무 확인
-const hasNextPage = async (driver:WebDriver,targetSite:string)=>{
+const hasNextPage = async (driver:WebDriver,targetSite:string):Promise<boolean>=>{
     let nextTag ="";
     let nextBtn:any=null;
-    const t = true;
-    const f = false;
+    const t:boolean = true;
+    const f :boolean= false;
     if(targetSite==="jobK"){
         nextTag = ".btnPgnNext";
         try{
             nextBtn = await driver.findElement(By.css(nextTag));
+            await nextBtn.click();
         }catch(e){
             return f;
         }
@@ -51,11 +53,11 @@ const hasNextPage = async (driver:WebDriver,targetSite:string)=>{
                 } else if (Number.isNaN(parseInt(thisPage))) continue;
             }
             if(nextBtn==null) return f;
+            await nextBtn.click();
         }catch(e){
             return f;
         }
     }
-    await nextBtn.click();
     await driver.sleep(1000);
     return t;
 }
