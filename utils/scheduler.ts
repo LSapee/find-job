@@ -9,8 +9,8 @@ export const crawlingScheduler = async ()=>{
         for(const item of keywords){
             const resultJok = await jobKCrawler(item);
             const resultSaramIn = await saramInCrawler(item);
-            console.log(resultJok);
-            console.log(resultSaramIn);
+            console.log("크롤링 resultJob :", resultJok );
+            console.log("크롤링 resultSaramIn: ", resultSaramIn);
         }
     })
 }

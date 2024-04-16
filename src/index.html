@@ -15,27 +15,20 @@
     const inputGet =()=>{
         const inputMapping = [];
         const title = document.getElementById("searchTitle").value;
-        const st = document.getElementById("st");
         const myExp =document.getElementById("exp").value;
         const expAll = document.getElementById("expAll").checked;
         inputMapping.push({
             title:title,
-            st:st,
             myExp,myExp,
             expAll,expAll
         })
         return inputMapping;
     }
     const errorMessage =(myData)=>{
-        const {st} =inputGet();
-        if(myData[0].error){
-            const temp = document.createElement("div");
-            temp.innerHTML =`<h1>${myData[0].error}</h1>`;
-            st.append(temp);
-        }
+        if(myData[0].error) alert(myData[0].error);
     }
     const stAdd =(myData)=>{
-        const {st} =inputGet();
+        const st = document.getElementById("st");
         console.log(myData)
         for(let i=0; i<myData.length; i++){
             const company = myData[i].company;
@@ -63,30 +56,6 @@
             `
             st.append(temp);
         }
-    }
-    async function jobk(){
-        const {title,myExp,expAll} = inputGet();
-        const myData = await fetch(`http://localhost:3000/jobk?search=${title}&expAll=${expAll}&exp=${myExp}`)
-            // const myData = await fetch(`https://findjob.lsapee.com/jobk?search=${title}&expAll=${expAll}&exp=${myExp}`)
-            .then((r)=>r.json())
-            .then((json)=>json)
-        if(myData.length === 1){
-            errorMessage(myData)
-            return ;
-        }
-        stAdd(myData);
-    }
-    async function saramin (){
-        const {title,myExp,expAll} = inputGet();
-        const myData = await fetch(`http://localhost:3000/saramin?search=${title}&expAll=${expAll}&exp=${myExp}`)
-        // const myData = await fetch(`https://findjob.lsapee.com/saramin?search=${title}&expAll=${expAll}&exp=${myExp}`)
-            .then((r)=>r.json())
-            .then((json)=>json)
-        if(myData.length === 1){
-            errorMessage(myData)
-            return ;
-        }
-        stAdd(myData);
     }
     async function test(){
         const {title,myExp,expAll} = inputGet()[0];
@@ -132,21 +101,12 @@
                         </div>
                     </div>
                     <div class="col-4">
+
+                    </div>
+                    <div class="col-4" >
                         <div class="col-6">
                             <button onClick="test()" class="btn btn-info"style="width: 100%"> DB데이터 가져와 </button>
                         </div>
-                    </div>
-                    <div class="col-4" >
-                        <div class="row">
-                            <div class="col-6">
-                                <button onClick="jobk()" class="btn btn-primary" style="width: 100%"> 잡코리아 가져와 </button>
-                            </div>
-                            <div class="col-6">
-                                <button onClick="saramin()" class="btn btn-info"style="width: 100%"> 사람인 가져와 </button>
-                            </div>
-
-                        </div>
-
                     </div>
                 </div>
                 <div style="margin-top: 10px;">

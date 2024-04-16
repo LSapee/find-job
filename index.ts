@@ -24,14 +24,15 @@ app.get("/saramin", async (req:Request,res:Response)=>{
     //검색한 단어
     const {search:keyword,expAll:expAll,exp:myExp} = req.query;
     const myList = await saramInCrawler(keyword,myExp,expAll);
-    res.send(myList);
+    if(myList===false) res.send([{error:"키워드가 존재하지 않습니다."}]);
+    else res.send(myList);
 })
 // DB 조회 테스트
 app.get("/test", async (req:Request,res:Response)=>{
     const {search:keyword,expAll:expAll,exp:myExp} = req.query;
     const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp);
-    if(myList===false) [{error:"키워드가 존재하지 않습니다."}]
-    res.send(myList);
+    if(myList===false) res.send([{error:"키워드가 존재하지 않습니다."}]);
+    else res.send(myList);
 })
 
 //메인 페이지
