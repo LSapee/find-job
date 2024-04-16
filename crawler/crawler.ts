@@ -19,7 +19,7 @@ chromeOptions.addArguments('--disable-blink-features=AutomationControlled');
 const jobKCrawler = async (keyword:string):Promise<boolean>=>{
     let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
     // let driver = await new Builder().forBrowser("chrome").build();
-    // return 해줄 배열
+    // DB에 추가해줄 배열
     const myList:MyList[] =[];
     const myURL:string="https://www.jobkorea.co.kr/";
     // 구분자로 쓸 예정
@@ -65,7 +65,6 @@ const jobKCrawler = async (keyword:string):Promise<boolean>=>{
             await crawlerRepository(myList,keyword);
             myList.length=0;
             ok = await hasNextPage(driver,thisSite);
-            break;
         }while(ok)
     }catch(e){
         myList.length=0;
@@ -149,7 +148,6 @@ const saramInCrawler = async (keyword:string) :Promise<boolean>=>{
             await crawlerRepository(myList,keyword);
             myList.length=0;
             ok = await hasNextPage(driver,thisSite);
-            break;
         }while(ok);
     }catch(e){
         myList.length =0;
