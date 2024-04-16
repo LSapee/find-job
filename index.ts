@@ -29,8 +29,13 @@ app.get("/saramin", async (req:Request,res:Response)=>{
 })
 // DB 조회 테스트
 app.get("/test", async (req:Request,res:Response)=>{
-    const {search:keyword,expAll:expAll,exp:myExp} = req.query;
-    const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp);
+    const {search:keyword,expAll:expAll,exp:myExp,startNum:startNum} = req.query;
+    let stnum =0;
+    console.log(startNum)
+    console.log(typeof startNum);
+    if(typeof(startNum)==="string")  stnum = parseInt(startNum);
+    console.log("stnum",stnum)
+    const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum);
     if(myList===false) res.send([{error:"키워드가 존재하지 않습니다."}]);
     else res.send(myList);
 })

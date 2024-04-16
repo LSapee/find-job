@@ -1,7 +1,7 @@
 import {prisma} from "./prismaDB";
 import {MyList} from "../types/myList";
 
-const findAlljob = async (keyword:string,expAll:string,exp:number|string):Promise<MyList[]|boolean>=>{
+const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumber:number):Promise<MyList[]|boolean>=>{
     const myList:MyList[] = [];
     try{
         let keywordId:number;
@@ -37,6 +37,7 @@ const findAlljob = async (keyword:string,expAll:string,exp:number|string):Promis
                         },
                     }
                 },
+                skip:stNumber,
                 take:100
             })
             jobs.forEach(item =>{
@@ -79,6 +80,7 @@ const findAlljob = async (keyword:string,expAll:string,exp:number|string):Promis
                         },
                     }
                 },
+                skip:stNumber,
                 take:100
             })
         jobs.forEach(item =>{
@@ -121,6 +123,7 @@ const findAlljob = async (keyword:string,expAll:string,exp:number|string):Promis
                         },
                     }
                 },
+                skip:stNumber,
                 take:100,
 
             })

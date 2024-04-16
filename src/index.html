@@ -12,33 +12,30 @@
     ul{padding:0;}
 </style>
 <script>
-    const inputGet =()=>{
-        const inputMapping = [];
-        const title = document.getElementById("searchTitle").value;
-        const myExp =document.getElementById("exp").value;
-        const expAll = document.getElementById("expAll").checked;
-        inputMapping.push({
-            title:title,
-            myExp,myExp,
-            expAll,expAll
-        })
-        return inputMapping;
+    const PageData = [];
+    const PageMove = (PageNumber)=>{
+        const st = document.getElementById("st");
+        st.innerHTML = ' ';
+        console.log(PageNumber)
+        makeListPage(PageNumber)
+      }
+    const createNxtPage = (PageNumber)=>{
+        test(PageNumber);
     }
     const errorMessage =(myData)=>{
         if(myData[0].error) alert(myData[0].error);
     }
-    const stAdd =(myData)=>{
+    const makeListPage =(thisPage)=>{
         const st = document.getElementById("st");
-        console.log(myData)
-        for(let i=0; i<myData.length; i++){
-            const company = myData[i].company;
-            const postTitle = myData[i].postTitle;
-            const exp = myData[i].exp;
-            const edu = myData[i].edu;
-            const loc = myData[i].loc;
-            const skillStacks = myData[i].skillStacks;
-            const endDate = myData[i].endDate;
-            const postURL = myData[i].postURL;
+        for(let i=0; i<PageData[thisPage].length; i++){
+            const company = PageData[thisPage][i].company;
+            const postTitle = PageData[thisPage][i].postTitle;
+            const exp = PageData[thisPage][i].exp;
+            const edu = PageData[thisPage][i].edu;
+            const loc = PageData[thisPage][i].loc;
+            const skillStacks = PageData[thisPage][i].skillStacks;
+            const endDate = PageData[thisPage][i].endDate;
+            const postURL = PageData[thisPage][i].postURL;
             const temp = document.createElement("div");
             temp.innerHTML =
                 `
@@ -57,21 +54,68 @@
             st.append(temp);
         }
     }
-    async function test(){
+
+    const makePageNation =(myData,stNum)=>{
+        const maxPage = parseInt(myData.length/10);
+        const pageNumbers = document.createElement("div");
+        pageNumbers.setAttribute("class","row");
+        for(let i=0; i<maxPage; i++){
+            const temp =[];
+            for(let j=0; j<10; j++){
+                // 1페이지에 10개씩만
+                temp.push(myData[(i*10)+j]);
+            }
+            PageData.push(temp);
+            const pageNumber = document.createElement("div")
+            pageNumber.setAttribute("class",`col-1`);
+            pageNumber.innerHTML=`<button id="page0${i}" onclick="PageMove(${stNum+i})">${stNum+(i+1)}</button>`;
+            pageNumbers.append(pageNumber);
+        }
+        if(maxPage===10){
+            const nextBtn = document.createElement("div")
+            nextBtn.setAttribute("class",`col-1`);
+            nextBtn.innerHTML=`<button id="nextPage" onclick="createNxtPage(${stNum+10})">></button>`;
+            pageNumbers.append(nextBtn);
+        }
+
+        return pageNumbers;
+    }
+    const inputGet =()=>{
+        const inputMapping = [];
+        const title = document.getElementById("searchTitle").value;
+        const myExp =document.getElementById("exp").value;
+        const expAll = document.getElementById("expAll").checked;
+        inputMapping.push({
+            title:title,
+            myExp,myExp,
+            expAll,expAll
+        })
+        return inputMapping;
+    }
+
+    async function test(startNum){
         const {title,myExp,expAll} = inputGet()[0];
-        const myData = await fetch(`http://localhost:3000/test?search=${title}&expAll=${expAll}&exp=${myExp}`)
+        console.log(startNum);
+        const myData = await fetch(`http://localhost:3000/test?search=${title}&expAll=${expAll}&exp=${myExp}&startNum=${startNum*10}`)
             .then((r)=>r.json())
             .then((json)=>json)
+        //오류 처리
         if(myData.length===1){
             errorMessage(myData)
             return ;
         }
-        stAdd(myData);
+        console.log(myData)
+        const pageList = document.getElementById("pageList");
+        // 페이지 리스트 만들기
+        const lists = makePageNation(myData,startNum);
+        console.log(PageData)
+        PageMove(startNum);
+        pageList.append(lists);
     }
 
 </script>
-<body>
-    <div class="container-fluid" style="padding-top:30px">
+<body style="margin: 0; padding: 0;">
+    <div class="container-fluid" style="padding-top:30px; margin: 0;padding-left: 0; padding-right: 0; ">
         <div class="row">
             <div class="col-2"></div>
             <div class="col-8">
@@ -105,7 +149,7 @@
                     </div>
                     <div class="col-4" >
                         <div class="col-6">
-                            <button onClick="test()" class="btn btn-info"style="width: 100%"> DB데이터 가져와 </button>
+                            <button onClick="test(0)" class="btn btn-info"style="width: 100%"> DB데이터 가져와 </button>
                         </div>
                     </div>
                 </div>
@@ -113,10 +157,19 @@
                     <ul id="st">
 
                     </ul>
+                    <div class="row" style="margin-top: 20px; margin-bottom: 20px;">
+                        <div class="col-4"></div>
+                        <div class="col-4" id="pageList"></div>
+                        <div class="col-4"></div>
+                    </div>
+                    <div style="height: 150px;"></div>
                 </div>
             </div>
+
             <div class="col-2"></div>
+
         </div>
+
     </div>
 
 </body>
