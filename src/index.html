@@ -16,7 +16,6 @@
     const PageMove = (PageNumber)=>{
         const st = document.getElementById("st");
         st.innerHTML = ' ';
-        console.log(PageNumber)
         makeListPage(PageNumber)
       }
     const createNxtPage = (PageNumber)=>{
@@ -54,7 +53,6 @@
             st.append(temp);
         }
     }
-
     const makePageNation =(myData,stNum)=>{
         const maxPage = parseInt(myData.length/10);
         const pageNumbers = document.createElement("div");
@@ -92,11 +90,9 @@
         })
         return inputMapping;
     }
-
-    async function test(startNum){
+    async function getjob(startNum){
         const {title,myExp,expAll} = inputGet()[0];
-        console.log(startNum);
-        const myData = await fetch(`http://localhost:3000/test?search=${title}&expAll=${expAll}&exp=${myExp}&startNum=${startNum*10}`)
+        const myData = await fetch(`https://findjob.lsapee.com/getjob?search=${title}&expAll=${expAll}&exp=${myExp}&startNum=${startNum*10}`)
             .then((r)=>r.json())
             .then((json)=>json)
         //오류 처리
@@ -104,15 +100,12 @@
             errorMessage(myData)
             return ;
         }
-        console.log(myData)
         const pageList = document.getElementById("pageList");
         // 페이지 리스트 만들기
         const lists = makePageNation(myData,startNum);
-        console.log(PageData)
         PageMove(startNum);
         pageList.append(lists);
     }
-
 </script>
 <body style="margin: 0; padding: 0;">
     <div class="container-fluid" style="padding-top:30px; margin: 0;padding-left: 0; padding-right: 0; ">
@@ -149,7 +142,7 @@
                     </div>
                     <div class="col-4" >
                         <div class="col-6">
-                            <button onClick="test(0)" class="btn btn-info"style="width: 100%"> DB데이터 가져와 </button>
+                            <button onClick="getjob(0)" class="btn btn-info"style="width: 100%"> DB데이터 가져와 </button>
                         </div>
                     </div>
                 </div>
@@ -162,7 +155,9 @@
                         <div class="col-4" id="pageList"></div>
                         <div class="col-4"></div>
                     </div>
-                    <div style="height: 150px;"></div>
+                    <div style="height:150px;">
+                        <p>dsadsa</p>
+                    </div>
                 </div>
             </div>
 

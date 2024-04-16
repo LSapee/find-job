@@ -12,29 +12,11 @@ app.use(cors({
     origin:"*"
 }));
 crawlingScheduler();
-// 잡코리아
-app.get("/jobk",async (req:Request,res:Response)=>{
-    // 검색한 단어
-    const {search:keyword,expAll:expAll,exp:myExp} = req.query;
-    const myList = await jobKCrawler(keyword,myExp,expAll);
-    res.send(myList);
-})
-// 사람인
-app.get("/saramin", async (req:Request,res:Response)=>{
-    //검색한 단어
-    const {search:keyword,expAll:expAll,exp:myExp} = req.query;
-    const myList = await saramInCrawler(keyword,myExp,expAll);
-    if(myList===false) res.send([{error:"키워드가 존재하지 않습니다."}]);
-    else res.send(myList);
-})
 // DB 조회 테스트
-app.get("/test", async (req:Request,res:Response)=>{
+app.get("/getjob", async (req:Request,res:Response)=>{
     const {search:keyword,expAll:expAll,exp:myExp,startNum:startNum} = req.query;
-    let stnum =0;
-    console.log(startNum)
-    console.log(typeof startNum);
+    let stnum:number =0;
     if(typeof(startNum)==="string")  stnum = parseInt(startNum);
-    console.log("stnum",stnum)
     const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum);
     if(myList===false) res.send([{error:"키워드가 존재하지 않습니다."}]);
     else res.send(myList);
