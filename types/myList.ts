@@ -1,7 +1,7 @@
 export type MyList = {
     company :string
     postTitle :string
-    exp : string[]
+    exp : string[]|string
     edu : string
     loc : string
     skillStacks : string

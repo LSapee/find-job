@@ -1,8 +1,8 @@
 import {prisma} from "./prismaDB";
 import {MyList} from "../types/myList";
 
-async function crawlerRepository(Mylists:MyList[],keyWord:string):Promise<string> {
-    let ans :string = "성공"
+const crawlerRepository =async (Mylists:MyList[],keyWord:string):Promise<boolean> =>{
+    let ans :boolean = true;
     try{
         // 키워드 ID 찾기
         const keyWordFind = await prisma.keywords.findFirst({
@@ -52,6 +52,7 @@ async function crawlerRepository(Mylists:MyList[],keyWord:string):Promise<string
                         title :item.postTitle,
                         experience_level:item.exp.toString(),
                         education_level :item.edu,
+                        location:item.loc,
                         tech_stack :item.skillStacks,
                         closing_date:item.endDate,
                         link:item.postURL.toString(),
@@ -67,12 +68,30 @@ async function crawlerRepository(Mylists:MyList[],keyWord:string):Promise<string
             }
         }
     }catch(e){
-        console.log(e)
-        ans ="실패";
+        console.error(e)
+        ans =false;
     }finally{
         await prisma.$disconnect();
     }
     return ans;
 }
-module.exports = {crawlerRepository}
+const findKeywords = async ():Promise<string[]>=>{
+    const keywords:string[] = [];
+    try{
+        const keywordList = await prisma.keywords.findMany({
+            select:{
+                keyword:true
+            }
+        })
+        keywordList.forEach(item =>{
+            keywords.push(item.keyword);
+        })
+    }catch(e){
+        console.error(e);
+    }finally {
+        await prisma.$disconnect();
+    }
+    return keywords;
+}
+module.exports = {crawlerRepository,findKeywords}
 

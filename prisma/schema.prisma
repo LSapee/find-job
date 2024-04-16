@@ -19,6 +19,7 @@ model Job_Posting{
   title String
   experience_level String
   education_level String
+  location String
   tech_stack String
   closing_date String
   link String

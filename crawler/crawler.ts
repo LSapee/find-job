@@ -3,7 +3,7 @@ import chrome from "selenium-webdriver/chrome"
 import {MyList} from "../types/myList";
 const {hasElement,hasURL,hasNextPage,exps,expOk,companyReNamed} = require("../utils/utils");
 const {makeCSV} = require("../makeCSV/makeCSV")
-const {crawlerRepository} =require("../Repository/test.Repository");
+const {crawlerRepository} =require("../Repository/crawler.Repository");
 
 let chromeOptions:chrome.Options = new chrome.Options();
 // headless 모드 실행
@@ -16,11 +16,10 @@ chromeOptions.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64)
 chromeOptions.excludeSwitches('enable-automation');
 chromeOptions.addArguments('--disable-blink-features=AutomationControlled');
 
-const jobKCrawler = async (keyword:string,myExp:string,expAll:string)=>{
+const jobKCrawler = async (keyword:string):Promise<boolean>=>{
     let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
     // let driver = await new Builder().forBrowser("chrome").build();
     // return 해줄 배열
-    const expAllOk :boolean = expAll.includes("true") ? true:false;
     const myList:MyList[] =[];
     const myURL:string="https://www.jobkorea.co.kr/";
     // 구분자로 쓸 예정
@@ -52,22 +51,21 @@ const jobKCrawler = async (keyword:string,myExp:string,expAll:string)=>{
                 if(postTitle==="")break;
                 if(postURL===false)break;
                 const expArr:string[] =exps(exp);
-                const expT = expOk(exp,myExp,expAllOk);
-                if(expT){
-                    myList.push({
-                        company:companyName,
-                        postTitle,
-                        exp:expArr,
-                        edu,
-                        loc,
-                        skillStacks,
-                        endDate,
-                        postURL
-                    });
-                }
+                myList.push({
+                    company:companyName,
+                    postTitle,
+                    exp:expArr,
+                    edu,
+                    loc,
+                    skillStacks,
+                    endDate,
+                    postURL
+                });
             }
-            break;
+            await crawlerRepository(myList,keyword);
+            myList.length=0;
             ok = await hasNextPage(driver,thisSite);
+            break;
         }while(ok)
     }catch(e){
         myList.length=0;
@@ -75,21 +73,19 @@ const jobKCrawler = async (keyword:string,myExp:string,expAll:string)=>{
     }finally{
         await driver.quit();
     }
-    // if(hasError) return [{error:"검색 결과가 없습니다."}];
+    if(hasError) return false;
     // else makeCSV(thisSite,myList,keyword);
-    const result = await crawlerRepository(myList,keyword);
     console.log("jobK 크롤링 종료합니다.");
-    return myList;
+    return true;
 }
 
-const saramInCrawler = async (keyword:string,myExp:string,expAll:string) :Promise<MyList[]|object[]>=>{
+const saramInCrawler = async (keyword:string) :Promise<boolean>=>{
     const myURL = `https://www.saramin.co.kr/zf_user`;
     // let driver = await new Builder().forBrowser("chrome").build();
     let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
     const myList:MyList[] = [];
     const thisSite:string = "saramIn";
     let hasError:boolean =false;
-    const expAllOk :boolean = expAll.includes("true") ? true:false;
     console.log("saramIn 크롤링 시작합니다.")
     try{
         await driver.get(myURL)
@@ -139,21 +135,21 @@ const saramInCrawler = async (keyword:string,myExp:string,expAll:string) :Promis
                 }
                 const company:string = com.split("\n")[0];
                 const companyName :string = companyReNamed(company);
-                const expT:string[] = expOk(exp,myExp,expAllOk);
-                if(expT){
-                    myList.push({
-                        company:companyName,
-                        postTitle,
-                        exp,
-                        edu,
-                        loc,
-                        skillStacks,
-                        endDate,
-                        postURL
-                    });
-                }
+                myList.push({
+                    company:companyName,
+                    postTitle,
+                    exp,
+                    edu,
+                    loc,
+                    skillStacks,
+                    endDate,
+                    postURL
+                });
             }
+            await crawlerRepository(myList,keyword);
+            myList.length=0;
             ok = await hasNextPage(driver,thisSite);
+            break;
         }while(ok);
     }catch(e){
         myList.length =0;
@@ -161,10 +157,10 @@ const saramInCrawler = async (keyword:string,myExp:string,expAll:string) :Promis
     }finally{
         await driver.quit();
     }
-    if(hasError) return [{error:"검색 결과가 없습니다."}];
+    if(hasError) return false;
     // else makeCSV(thisSite,myList,keyword);
     console.log("saramIn 크롤링 종료합니다.");
-    return myList;
+    return true;
 }
 
 module.exports = {jobKCrawler,saramInCrawler}
