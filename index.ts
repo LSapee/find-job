@@ -16,6 +16,7 @@ crawlingScheduler();
 app.get("/getjob", async (req:Request,res:Response)=>{
     const {search:keyword,expAll:expAll,exp:myExp,startNum:startNum} = req.query;
     let stnum:number =0;
+    console.log(typeof expAll);
     if(typeof(startNum)==="string")  stnum = parseInt(startNum);
     const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum);
     if(myList===false) res.send([{error:"키워드가 존재하지 않습니다."}]);

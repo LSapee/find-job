@@ -19,7 +19,8 @@ const crawlerRepository =async (Mylists:MyList[],keyWord:string):Promise<boolean
             // 해당 url 있는지 확인
             const okData = await prisma.job_Posting.findFirst({
                 where :{
-                    link: item.postURL.toString()
+                    title: item.postTitle,
+                    company_name:item.company
                 }
             })
             // url이 이미 존재한다면

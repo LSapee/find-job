@@ -73,14 +73,20 @@ const exps = (exp:string):string[] =>{
         if(match!==null){
             const n:number = parseInt(match[1]);
             const m:number = parseInt(match[2]);
-            for(let i:number=n; i<=m; i++) expList.push(`${i}년`);
+            for(let i:number=n; i<=m; i++) {
+                if(i<10) expList.push(`0${i}년`);
+                else expList.push(`${i}년`);
+            }
         }
     }
     if(exp.match(overN)){
         const match:RegExpMatchArray|null  = exp.match(overN);
         if(match!==null) {
             const n: number = parseInt(match[1]);
-            for (let i:number = n; i <= 10; i++) expList.push(`${i}년`);
+            for (let i:number = n; i <= 10; i++){
+                if(i<10) expList.push(`0${i}년`);
+                else expList.push(`${i}년`);
+            }
         }
     }
     if(exp.includes("신입·경력")){expList.push("신입");expList.push("경력");}

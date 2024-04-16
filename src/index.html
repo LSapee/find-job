@@ -19,13 +19,14 @@
         makeListPage(PageNumber)
       }
     const createNxtPage = (PageNumber)=>{
-        getjob(PageNumber);
+        getJob(PageNumber);
     }
     const errorMessage =(myData)=>{
         if(myData[0].error) alert(myData[0].error);
     }
     const makeListPage =(thisPage)=>{
         const st = document.getElementById("st");
+        console.log(PageData[thisPage].length);
         for(let i=0; i<PageData[thisPage].length; i++){
             const company = PageData[thisPage][i].company;
             const postTitle = PageData[thisPage][i].postTitle;
@@ -54,13 +55,16 @@
         }
     }
     const makePageNation =(myData,stNum)=>{
-        const maxPage = parseInt(myData.length/10);
+        let maxPage = parseInt(myData.length/10);
+        if(maxPage===0) maxPage=1;
         const pageNumbers = document.createElement("div");
         pageNumbers.setAttribute("class","row");
+        const maxPostingCnt = myData.length;
         for(let i=0; i<maxPage; i++){
             const temp =[];
             for(let j=0; j<10; j++){
                 // 1페이지에 10개씩만
+                if(maxPostingCnt<=(i*10)+j) break;
                 temp.push(myData[(i*10)+j]);
             }
             PageData.push(temp);
@@ -90,17 +94,20 @@
         })
         return inputMapping;
     }
-    async function getjob(startNum){
+    async function getJob(startNum){
+        const pageList = document.getElementById("pageList");
+        if(startNum===0) pageList.innerHTML="";
         const {title,myExp,expAll} = inputGet()[0];
+        // const myData = await fetch(`http://localhost:3000/getjob?search=${title}&expAll=${expAll}&exp=${myExp}&startNum=${startNum*10}`)
         const myData = await fetch(`https://findjob.lsapee.com/getjob?search=${title}&expAll=${expAll}&exp=${myExp}&startNum=${startNum*10}`)
             .then((r)=>r.json())
             .then((json)=>json)
+        console.log(myData);
         //오류 처리
         if(myData.length===1){
             errorMessage(myData)
             return ;
         }
-        const pageList = document.getElementById("pageList");
         // 페이지 리스트 만들기
         const lists = makePageNation(myData,startNum);
         PageMove(startNum);
@@ -119,15 +126,15 @@
                         <select class="form-select" id="exp">
                             <option value="전부">전부</option>
                             <option value="신입">신입</option>
-                            <option value="1">1년</option>
-                            <option value="2">2년</option>
-                            <option value="3">3년</option>
-                            <option value="4">4년</option>
-                            <option value="5">5년</option>
-                            <option value="6">6년</option>
-                            <option value="7">7년</option>
-                            <option value="8">8년</option>
-                            <option value="9">9년</option>
+                            <option value="01">1년</option>
+                            <option value="02">2년</option>
+                            <option value="03">3년</option>
+                            <option value="04">4년</option>
+                            <option value="05">5년</option>
+                            <option value="06">6년</option>
+                            <option value="07">7년</option>
+                            <option value="08">8년</option>
+                            <option value="09">9년</option>
                             <option value="10">10년 이상</option>
                         </select>
                     </div>
@@ -142,7 +149,7 @@
                     </div>
                     <div class="col-4" >
                         <div class="col-6">
-                            <button onClick="getjob(0)" class="btn btn-info"style="width: 100%"> DB데이터 가져와 </button>
+                            <button onClick="getJob(0)" class="btn btn-info"style="width: 100%"> DB데이터 가져와 </button>
                         </div>
                     </div>
                 </div>
@@ -154,9 +161,6 @@
                         <div class="col-4"></div>
                         <div class="col-4" id="pageList"></div>
                         <div class="col-4"></div>
-                    </div>
-                    <div style="height:150px;">
-                        <p></p>
                     </div>
                 </div>
             </div>
