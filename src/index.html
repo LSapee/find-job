@@ -12,8 +12,14 @@
     ul{padding:0;}
     #searchTitle {width: 100%;
         height: 50px;}
+    .btnList {position:absolute; text-align: center}
+    .btnList button{background: none; border:0; border-left: 1px solid black; border-right: 1px solid black;}
+    #sideBox {position: fixed; right:5%; z-index: 10; top:300px;}
+    #backPage {border:0}
+    #nextPage {border:0}
 </style>
 <script>
+    const PageData = [];
     document.addEventListener("DOMContentLoaded", async ()=>{
         keywordGet();
     });
@@ -31,21 +37,32 @@
             title.append(keyword);
         }
     }
-    const PageData = [];
+    //page이동
     const PageMove = (PageNumber)=>{
         const st = document.getElementById("st");
         st.innerHTML = ' ';
-        makeListPage(PageNumber)
-      }
-    const createNxtPage = (PageNumber)=>{
-        getJob(PageNumber);
+        makeListPage(PageNumber);
+        const sideBox = document.getElementById("sideBox")
+        sideBox.innerHTML="";
+        const temp = document.createElement("h3").innerText=`현재 페이지는 :${PageNumber+1}`;
+        sideBox.append(temp);
     }
+    // > 버튼 클릭시 추가 데이터 가져오기
+    const createNxtPage = (PageNumber)=>{
+        const allPageList = document.getElementsByClassName("btnList");
+        for(let i=0; i<allPageList.length; i++){
+            allPageList[i].style.visibility = "hidden";
+        }
+        if(PageData.length<=PageNumber) getJob(PageNumber);
+        else movePageList(PageNumber/10);
+    }
+    // error 메시지처리
     const errorMessage =(myData)=>{
         if(myData[0].error) alert(myData[0].error);
     }
+    // n번 페이지에 대한 데이터 뿌려주기
     const makeListPage =(thisPage)=>{
         const st = document.getElementById("st");
-        console.log(PageData[thisPage].length);
         for(let i=0; i<PageData[thisPage].length; i++){
             const company = PageData[thisPage][i].company;
             const postTitle = PageData[thisPage][i].postTitle;
@@ -73,12 +90,33 @@
             st.append(temp);
         }
     }
+    const movePageList =(PageNumber)=>{
+        const allPageList = document.getElementsByClassName("btnList");
+        for(let i=0; i<allPageList.length; i++){
+            allPageList[i].style.visibility = "hidden";
+        }
+        allPageList[PageNumber].style.visibility="visible";
+        PageMove(PageNumber);
+    }
     const makePageNation =(myData,stNum)=>{
         let maxPage = parseInt(myData.length/10);
         if(maxPage===0) maxPage=1;
+        const btnListNumber =  parseInt(PageData.length/10);
         const pageNumbers = document.createElement("div");
-        pageNumbers.setAttribute("class","row");
+        pageNumbers.setAttribute("class","row btnList");
+        pageNumbers.setAttribute("id",`btnList${btnListNumber}`);
+        if(PageData.length>=10){
+            const backBtn = document.createElement("div")
+            backBtn.setAttribute("class","col-1");
+            backBtn.innerHTML=`<button id="backPage"class="pageBtn" onclick="movePageList(${btnListNumber-1})"><</button>`;
+            pageNumbers.append(backBtn);
+        }else{
+            const emptyBtn = document.createElement("div")
+            emptyBtn.setAttribute("class","col-1");
+            pageNumbers.append(emptyBtn);
+        }
         const maxPostingCnt = myData.length;
+        //페이지 목록 버튼 추가
         for(let i=0; i<maxPage; i++){
             const temp =[];
             for(let j=0; j<10; j++){
@@ -89,7 +127,7 @@
             PageData.push(temp);
             const pageNumber = document.createElement("div")
             pageNumber.setAttribute("class",`col-1`);
-            pageNumber.innerHTML=`<button id="page0${i}" onclick="PageMove(${stNum+i})">${stNum+(i+1)}</button>`;
+            pageNumber.innerHTML=`<button id="page${stNum+i}" onclick="PageMove(${stNum+i})">${stNum+(i+1)}</button>`;
             pageNumbers.append(pageNumber);
         }
         if(maxPage===10){
@@ -124,7 +162,6 @@
         const myData = await fetch(`https://findjob.lsapee.com/getjob?search=${title}&expAll=${expAll}&exp=${myExp}&startNum=${startNum*10}`)
             .then((r)=>r.json())
             .then((json)=>json)
-        console.log(myData);
         //오류 처리
         if(myData.length===1){
             errorMessage(myData)
@@ -191,12 +228,13 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-2"></div>
-
+            <div class="col-2">
+                <div id="sideBox">
+                </div>
+            </div>
         </div>
-
     </div>
+
 
 </body>
 </html>
