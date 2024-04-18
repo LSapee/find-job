@@ -10,8 +10,27 @@
     li,ol,ul {list-style: none; margin:0;}
     li{padding-top:10px; padding-bottom:10px; padding-left: 10px;}
     ul{padding:0;}
+    #searchTitle {width: 100%;
+        height: 50px;}
 </style>
 <script>
+    document.addEventListener("DOMContentLoaded", async ()=>{
+        keywordGet();
+    });
+    const keywordGet = async ()=>{
+        const title = document.getElementById("searchTitle")
+        const keywordLists = await fetch("https://findjob.lsapee.com/getKeywords")
+            .then((r)=>r.json())
+            .then((json)=>json)
+        if(keywordLists===false) {console.log("키워드가 존재하지 않습니다.");}
+        for(let i =0; i<keywordLists.length; i++){
+            const keyword = document.createElement("option");
+            keyword.setAttribute("value",keywordLists[i]);
+            keyword.setAttribute("class",`form-select`);
+            keyword.innerText = `${keywordLists[i]}`;
+            title.append(keyword);
+        }
+    }
     const PageData = [];
     const PageMove = (PageNumber)=>{
         const st = document.getElementById("st");
@@ -98,7 +117,10 @@
         const pageList = document.getElementById("pageList");
         if(startNum===0) pageList.innerHTML="";
         const {title,myExp,expAll} = inputGet()[0];
-        // const myData = await fetch(`http://localhost:3000/getjob?search=${title}&expAll=${expAll}&exp=${myExp}&startNum=${startNum*10}`)
+        if(title==="00"){
+            alert("검색어를 선택해주세요");
+            return ;
+        }
         const myData = await fetch(`https://findjob.lsapee.com/getjob?search=${title}&expAll=${expAll}&exp=${myExp}&startNum=${startNum*10}`)
             .then((r)=>r.json())
             .then((json)=>json)
@@ -119,8 +141,10 @@
         <div class="row">
             <div class="col-2"></div>
             <div class="col-8">
-                <h1 style="text-align: center">구인구직 크롤링</h1>
-                <input type="text" id="searchTitle" class="form-control"  placeholder="검색할 검색어" style="margin-bottom: 10px"/>
+                <h1 style="text-align: center">사람인/잡코리아 링크 가져오기</h1>
+                <select id="searchTitle" style="margin-bottom: 10px">
+                    <option value="00">검색어를 선택해주세요</option>
+                </select>
                 <div class="row">
                     <div class="col-2">
                         <select class="form-select" id="exp">
@@ -148,9 +172,12 @@
 
                     </div>
                     <div class="col-4" >
+                        <div class="row">
+                        <div class="col-6"></div>
                         <div class="col-6">
-                            <button onClick="getJob(0)" class="btn btn-info"style="width: 100%"> DB데이터 가져와 </button>
+                            <button onClick="getJob(0)" class="btn btn-info"style="width: 100%"> 데이터 가져오기 </button>
                         </div>
+                    </div>
                     </div>
                 </div>
                 <div style="margin-top: 10px;">

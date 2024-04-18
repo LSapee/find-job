@@ -3,6 +3,9 @@
 
 ### 사람인,잡코리아 구인공고 너무 많아서 봐야할 공고만 줄이기 위해서 만든 것.
 
+### 사용법
+    node,java,개발자,golang 입력후 경력 조건입력후 데이터 가져오기 눌러주기
+
 ### 로컬 사용법
  - clone 혹은 Download 하기
  - npm install (node가 없다면 node 설치)
@@ -20,13 +23,14 @@
 ### 현재 문제점 및 개선 방향성
  
  - ~~사람인 크롤링 도중에 가씀씩 input값 enter발생 하지 않는 문제 발생~~ -> 버튼클릭으로 변경하여
- - 중복값을 제거해야함. -> 미정
+ - ~~중복값을 제거해야함.~~ -> 회사명+공고제목으로 유니크설정 
  - ~~새로 고침을 할 경우 데이터가 날라가서 다시 크롤링 해야함.~~ -> localStorage사용할지 react State사용 고민
  - ~~사람인이나 공고가 많은 경우에는 TimeOut 발생~~ -> DB로 해결
  - node_schedule 사용하여 특정시간에 크롤링 되도록 변경 ~~예정~~완료.
  - 사람인 사이트 크롤링 문제 -> ~~GUI를 사용하지 않으면 error page로 보내는 문제 발생~~ -> ~~직접 DB에 보내는 방법 또는 안쓰는 컴퓨터를 사용해서 작업할 예정으로 변경.~~ -> headless 우회 방법
  - ~~RDS퍼블릭 사용시 비용 발생~~ -> 프라이빗 설정 같은 VPC의 EC2->RDS 접속하는 방식으로 변경 (로컬 환경에서는 터널링을 통해서 접속)
- - ~~[aws-ubuntu 22.04 이슈 발생](https://bugs.launchpad.net/ubuntu/+source/linux-aws/+bug/2058480)~~ -> ububtu 20.04버전으로 ec2 재설정 
+ - ~~[aws-ubuntu 22.04 이슈 발생](https://bugs.launchpad.net/ubuntu/+source/linux-aws/+bug/2058480)~~ -> ububtu 20.04버전으로 ec2 재설정
+ - "경력"만 적혀있는 경력에 대한 분류 재대로 못해서 지정 필요함
 ### HTTPS 연결
 
  - AWS ALB를 이용하여 구성

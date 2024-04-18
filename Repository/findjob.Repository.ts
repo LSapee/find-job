@@ -159,4 +159,26 @@ const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumbe
     return myList;
 }
 
-module.exports={findAlljob}
+const findAllkeyWords = async ():Promise<string[]|boolean> =>{
+    const keywords:string[] =[];
+    let dataIsIn = false;
+    try{
+        const keywordArr = await prisma.keywords.findMany({
+            select:{
+                keyword:true
+            }
+        })
+        if(keywordArr===null){
+            throw new Error("키워드가 존재하지 않습니다.");
+        }
+        dataIsIn=true;
+        for(const keyword of keywordArr) keywords.push(keyword.keyword);
+    }catch(e){
+        console.error(e);
+    }
+
+    return dataIsIn ? keywords : dataIsIn;
+
+}
+
+module.exports={findAlljob,findAllkeyWords}
