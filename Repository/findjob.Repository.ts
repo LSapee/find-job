@@ -56,7 +56,6 @@ const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumbe
             })
         }
         else if(expAll==="true"){
-            console.log("여기 돌아감 경력무관 포함")
             //경력 무관 포함
             const expA = "%경력무관%";
             const jobs = await prisma.job_Keywords.findMany({
@@ -104,7 +103,6 @@ const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumbe
             })
         })
         }else{
-            console.log("여기 돌아감 경력무관 X")
             // 해당 경력만
             const jobs = await prisma.job_Keywords.findMany({
                 orderBy:{
