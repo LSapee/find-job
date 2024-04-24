@@ -16,6 +16,7 @@ app.get("/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
     const logined = await test(code);
     console.log("logined",logined)
+    res.redirect("/");
 });
 
 
