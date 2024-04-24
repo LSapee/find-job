@@ -1,17 +1,24 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import {MyList} from "./types/myList";
-
 const app = express();
-const {jobKCrawler,saramInCrawler} = require("./crawler/crawler");
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {crawlingScheduler} = require("./utils/scheduler")
-const port = 3000;
+const {test} = require("./auth/auth");
+const port = 3002;
 
 app.use(cors({
     origin:"*"
 }));
+
 crawlingScheduler();
+app.get("/auth",async (req:Request,res:Response)=>{
+    const {code:code}= req.query;
+    const logined = await test(code);
+    console.log("logined",logined)
+});
+
+
 // DB 조회 테스트
 app.get("/getjob", async (req:Request,res:Response)=>{
     const {search:keyword,expAll:expAll,exp:myExp,startNum:startNum} = req.query;
@@ -34,7 +41,7 @@ app.get("/",(req:Request,res:Response)=>{
 })
 
 app.listen(port,()=>{
-    console.log("서비스를 시작합니다~");
+    console.log(`${port}포트로 서비스를 시작합니다~`);
 })
 
 module.exports = {app};
