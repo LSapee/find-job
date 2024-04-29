@@ -4,7 +4,7 @@ import {MyList} from "./types/myList";
 const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {crawlingScheduler} = require("./utils/scheduler")
-const {getToken,verifyTest} = require("./auth/auth");
+const {getToken,verifyToken} = require("./auth/auth");
 const port = 3000;
 
 app.use(cors({
@@ -19,6 +19,19 @@ crawlingScheduler();
 app.get("/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
     const tokens  = await getToken(code);
+    let name ="";
+    if(tokens!==null){
+        name = await verifyToken(tokens.id_token)
+        console.log(name)
+        res.cookie("access_token",tokens.access_token,{
+            httpOnly:true,
+            secure: true,
+        });
+        // res.cookie("name","aaa",{
+        //     httpOnly:true,
+        //     secure: true,
+        // })
+    }
     res.redirect("/");
 });
 

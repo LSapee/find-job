@@ -24,8 +24,6 @@ const getToken =async (code:string):Promise<string|null> =>{
             body: params
         });
         data = await response.json();
-        console.log("data.id_token",data.id_token)
-        console.log("data.access_token",data.access_token)
         return data;
     } catch (error) {
         data = null;
@@ -49,7 +47,7 @@ const getKey = (header:jwt.JwtHeader, callback:jwt.SigningKeyCallback):void=>{
 
 // 토큰 검사
 type VerifyResult = DecodedTokenType | string | undefined;
-const verifyTest = async (token:string|null):Promise<VerifyResult|false> =>{
+const verifyToken = async (token:string|null):Promise<VerifyResult|false> =>{
     if(token===null) return false;
     return new Promise((resolve, reject) => {
         jwt.verify(token, getKey, {
@@ -65,4 +63,4 @@ const verifyTest = async (token:string|null):Promise<VerifyResult|false> =>{
     });
 };
 
-module.exports={getToken,verifyTest}
+module.exports={getToken,verifyToken}
