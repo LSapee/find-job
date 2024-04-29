@@ -8,6 +8,35 @@ export type MyList = {
     endDate : string
     postURL :string|boolean
 }
+type Identity ={
+    dateCreated?: string; // 옵셔널로 변경
+    userId?: string; // 옵셔널로 변경
+    providerName?: string; // 옵셔널로 변경
+    providerType?: string; // 옵셔널로 변경
+    issuer?: null | string; // 옵셔널로 변경
+    primary?: string; // 옵셔널로 변경
+}
+
+export type DecodedTokenType ={
+    at_hash?: string;
+    sub: string;
+    "cognito:groups"?: string[];
+    email_verified: boolean;
+    iss: string;
+    "cognito:username": string;
+    origin_jti: string;
+    aud: string;
+    identities?: Identity[]; // 옵셔널로 변경
+    token_use: string;
+    auth_time: number;
+    name: string;
+    exp: number;
+    iat: number;
+    jti: string;
+    email: string;
+    event_id?: string; // 새로 추가된 필드
+}
+
 /*
 * company = 회사명
 * postTitle = 공고명
