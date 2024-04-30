@@ -4,7 +4,7 @@ import {MyList} from "./types/myList";
 const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {crawlingScheduler} = require("./utils/scheduler")
-const {getToken,verifyToken} = require("./auth/auth");
+const {getToken,verifyToken,getName} = require("./auth/auth");
 const port = 3000;
 
 app.use(cors({
@@ -16,27 +16,23 @@ app.use(express.urlencoded({ extended: true }));
 // 자동 크롤링
 crawlingScheduler();
 //
-app.get("/auth",async (req:Request,res:Response)=>{
+app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
     const tokens  = await getToken(code);
     let name ="";
     if(tokens!==null){
-        name = await verifyToken(tokens.id_token)
-        console.log(name)
+        name = await getName(tokens.id_token)
         res.cookie("access_token",tokens.access_token,{
             httpOnly:true,
             secure: true,
         });
-        // res.cookie("name","aaa",{
-        //     httpOnly:true,
-        //     secure: true,
-        // })
+        res.cookie("name",name);
     }
-    res.redirect("/");
+    res.redirect("/",);
 });
 
 // DB 조회
-app.get("/getjob", async (req:Request,res:Response)=>{
+app.get("/api/getjob", async (req:Request,res:Response)=>{
     const {search:keyword,expAll:expAll,exp:myExp,startNum:startNum} = req.query;
     // 추가 조회할 정보 데이터 시작번호
     let stnum:number =0;
@@ -45,7 +41,7 @@ app.get("/getjob", async (req:Request,res:Response)=>{
     res.send(myList);
 })
 //등록된 키워드 데이터 가져오기
-app.get("/getKeywords",async (req:Request,res:Response)=>{
+app.get("/api/getKeywords",async (req:Request,res:Response)=>{
     const keywords = await findAllkeyWords();
     res.send(keywords);
 })
