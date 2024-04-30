@@ -46,9 +46,9 @@ app.get("/api/getKeywords",async (req:Request,res:Response)=>{
     res.send(keywords);
 })
 //메인 페이지
-app.get("/",(req:Request,res:Response)=>{
-    res.sendFile(__dirname+"/src/index.html")
-})
+// app.get("/",(req:Request,res:Response)=>{
+//     res.sendFile(__dirname+"/src/index.html")
+// })
 
 app.listen(port,()=>{
     console.log(`${port}포트로 서비스를 시작합니다~`);
