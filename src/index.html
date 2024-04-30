@@ -23,9 +23,10 @@
     document.addEventListener("DOMContentLoaded", async ()=>{
         keywordGet();
     });
+    //keyword들 가져오기
     const keywordGet = async ()=>{
         const title = document.getElementById("searchTitle")
-        const keywordLists = await fetch("https://findjob.lsapee.com/getKeywords")
+        const keywordLists = await fetch("https://findjob.lsapee.com/api/getKeywords")
             .then((r)=>r.json())
             .then((json)=>json)
         if(keywordLists===false) {console.log("키워드가 존재하지 않습니다.");}
@@ -41,6 +42,7 @@
     const PageMove = (PageNumber)=>{
         const st = document.getElementById("st");
         st.innerHTML = ' ';
+        console.log(PageNumber);
         makeListPage(PageNumber);
         const sideBox = document.getElementById("sideBox")
         sideBox.innerHTML="";
@@ -103,7 +105,7 @@
         if(maxPage===0) maxPage=1;
         const btnListNumber =  parseInt(PageData.length/10);
         const pageNumbers = document.createElement("div");
-        pageNumbers.setAttribute("class","row btnList");
+        pageNumbers.setAttribute("class","row btnList justify-content-center");
         pageNumbers.setAttribute("id",`btnList${btnListNumber}`);
         if(PageData.length>=10){
             const backBtn = document.createElement("div")
@@ -153,13 +155,17 @@
     }
     async function getJob(startNum){
         const pageList = document.getElementById("pageList");
-        if(startNum===0) pageList.innerHTML="";
+        if(startNum===0) {
+           while(pageList.firstChild){
+               pageList.removeChild(pageList.firstChild);
+           }
+        }
         const {title,myExp,expAll} = inputGet()[0];
         if(title==="00"){
             alert("검색어를 선택해주세요");
             return ;
         }
-        const myData = await fetch(`https://findjob.lsapee.com/getjob?search=${title}&expAll=${expAll}&exp=${myExp}&startNum=${startNum*10}`)
+        const myData = await fetch(`https://findjob.lsapee.com/api/getjob?search=${title}&expAll=${expAll}&exp=${myExp}&startNum=${startNum*10}`)
             .then((r)=>r.json())
             .then((json)=>json)
         //오류 처리
