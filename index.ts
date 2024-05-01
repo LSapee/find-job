@@ -20,7 +20,6 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
     const tokens  = await getToken(code);
     if(tokens!==null){
-
         res.cookie("access_token",tokens.access_token,{
             httpOnly:true,
             secure: true,
@@ -37,7 +36,9 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
 //로그아웃시
 app.get("/api/logout",async (req:Request,res:Response)=>{
     res.clearCookie("access_token");
-    res.clearCookie("access");
+    res.clearCookie("access",{
+        domain: '.lsapee.com',
+    });
    res.redirect("https://findjob.lsapee.com");
 });
 // DB 조회
@@ -47,6 +48,11 @@ app.get("/api/getjob", async (req:Request,res:Response)=>{
     let stnum:number =0;
     if(typeof(startNum)==="string")  stnum = parseInt(startNum);
     const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum);
+    const mycookie = res.cookie("access_token",{httpOnly:true,
+        secure: true,
+        sameSite: 'none'}
+    );
+    console.log("mycookie",mycookie)
     res.send(myList);
 })
 //등록된 키워드 데이터 가져오기
