@@ -32,10 +32,9 @@
  - ~~RDS퍼블릭 사용시 비용 발생~~ -> 프라이빗 설정 같은 VPC의 EC2->RDS 접속하는 방식으로 변경 (로컬 환경에서는 터널링을 통해서 접속)
  - ~~[aws-ubuntu 22.04 이슈 발생](https://bugs.launchpad.net/ubuntu/+source/linux-aws/+bug/2058480)~~ -> ububtu 20.04버전으로 ec2 재설정
  - "경력"만 적혀있는 경력에 대한 분류 재대로 못해서 지정 필요함
- - Amplify+Cognito를 이용한 로그인 기능 구현중. -> (로그인 UI 변경 및 추가적인 고려사항으로 인하여 React 학습중)
- - 페이지 네이션 동작이 새로 검색했을때 이상해짐(React로 변경 예정)
+ - ~~Amplify+Cognito를 이용한 로그인 기능 구현중.~~ -> ~~(로그인 UI 변경 및 추가적인 고려사항으로 인하여 React 학습중)~~ -> cognito 호스팅UI 사용
+ - ~~페이지 네이션 동작이 새로 검색했을때 이상해짐(React로 변경 예정)~~ -> React로 구현 수정이 필요한 부분 있음.
  - 잡코리아의 중견기업(300명이상),대기업,대기업계열사.자회사로 적힌 회사명에 대한 분류 필요
- - 
 ### HTTPS 연결
 
  - AWS ALB를 이용하여 구성
@@ -47,13 +46,18 @@
  -  github Actions 이용하여 구성
  -  main 브런치에 변동사항 있을시 github Actions 실행
  -  test 자동화 구현X
- -  Login Page -> AWS Amplify를 통한 CI/CD 구성중 -> aws-exports.js가 생성되지 않는 문제 발생  
+ -  ~~Login Page -> AWS Amplify를 통한 CI/CD 구성중 -> aws-exports.js가 생성되지 않는 문제 발생~~
+ - Login Page -> cognito 호스팅 UI사용하기
 
 ### 현재
 
 - ~~DB 구성 및 크롤링 데이터 처리 어떻게 할지 생각중~~ -> 날짜 데이터 추가 가공필요
 - ~~DB 입력데이터로 회사명,공고제목,경력,학력,지역,기술스택,마감일,URL로 크롤링 데이터 변경~~ 수정완료
-- 페이지네이션 처리 변경중
+- ~~페이지네이션 처리 변경중~~
+- ~~cognito 로그인 연결 + cognito를 사용한 OAuth2.0연결 확인~~ 완료
+- ~~CORS 설정 완료~~
+- cognito login 후 user 테이블에 정보 넣어주기 만드는중
+
 ### 추후 생각중인 기능
 
 - 간편 로그인 또는 간단하게 로그인 가능하게 하여 지원 완료 공고는 보이지 않도록 하는 방안 생각중.
