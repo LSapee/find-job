@@ -20,11 +20,13 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
     const tokens  = await getToken(code);
     if(tokens!==null){
-        res.cookie("access","true",{
-            sameSite: 'none'
-        });
+
         res.cookie("access_token",tokens.access_token,{
             httpOnly:true,
+            secure: true,
+            sameSite: 'none'
+        });
+        res.cookie("access","true",{
             secure: true,
             sameSite: 'none'
         });
