@@ -25,6 +25,7 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
     const tokens  = await getToken(code);
     let useris:string|null ="";
+    console.log("tokens",tokens);
     if(tokens!==null){
         useris = await createUser(tokens.token_id);
         res.cookie("access_token",tokens.access_token,{
