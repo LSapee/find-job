@@ -15,20 +15,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // 자동 크롤링
 crawlingScheduler();
-//
+//로그인시
 app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
     const tokens  = await getToken(code);
-    let name ="";
     if(tokens!==null){
-        name = await getName(tokens.id_token)
         res.cookie("access_token",tokens.access_token,{
             httpOnly:true,
             secure: true,
         });
-        res.cookie("name",name);
+        res.cookie("access","true");
     }
-    res.redirect("/",);
+    res.redirect("https://findjob.lsapee.com",);
+});
+//로그아웃시
+app.get("/api/logout",async (req:Request,res:Response)=>{
+   res.redirect("https://findjob.lsapee.com");
 });
 
 // DB 조회
@@ -46,9 +48,9 @@ app.get("/api/getKeywords",async (req:Request,res:Response)=>{
     res.send(keywords);
 })
 //메인 페이지
-// app.get("/",(req:Request,res:Response)=>{
-//     res.sendFile(__dirname+"/src/index.html")
-// })
+app.get("/",(req:Request,res:Response)=>{
+    res.sendFile(__dirname+"/src/index.html")
+})
 
 app.listen(port,()=>{
     console.log(`${port}포트로 서비스를 시작합니다~`);
