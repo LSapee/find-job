@@ -27,6 +27,7 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
             sameSite: 'none'
         });
         res.cookie("access","true",{
+            domain: '.lsapee.com',
             secure: true,
             sameSite: 'none'
         });
