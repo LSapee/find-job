@@ -35,6 +35,7 @@ export type DecodedTokenType ={
     jti: string;
     email: string;
     event_id?: string; // 새로 추가된 필드
+    given_name?:string;
 }
 
 /*

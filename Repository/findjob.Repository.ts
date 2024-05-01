@@ -176,7 +176,6 @@ const findAllkeyWords = async ():Promise<string[]|boolean> =>{
     }
 
     return dataIsIn ? keywords : dataIsIn;
-
 }
 
 module.exports={findAlljob,findAllkeyWords}

@@ -1,21 +1,39 @@
 import {prisma} from "./prismaDB";
-const {getName,getEmail} = require("../auth/auth");
+const {getOauthName,getEmail,getName} = require("../auth/auth");
 
-const createUser = async (token:string)=>{
-    const name =await getName(token);
-    const email =await getEmail(token);
-    if(name!==null &&email!==null){
-        // 이름과 이메일이 존재한다면,
-        try{
-            // const hasUser = await prisma.User.findFirst({
-            //     where:{
-            //         keyword:keyword
-            //     }
-            // })
-        }catch (e){
-
+const createUser = async (token:string):Promise<null|string> =>{
+    try{
+        const OauthName =await getOauthName(token);
+        const email =await getEmail(token);
+        const name = await getName(token);
+        let oauth:string = "cognito"
+        if(name!==null &&email!==null &&name!==null){
+            const isGoogleOauth:boolean = OauthName.includes("google");
+            if(isGoogleOauth) oauth="google";
+            const UserFind = await prisma.users.findFirst({
+                where:{
+                    username:name,
+                    email:email,
+                    oauth:oauth,
+                }
+            })
+            if(UserFind===null) {
+                await prisma.users.create({
+                    data:{
+                        username: name,
+                        email: email,
+                        oauth:oauth,
+                    }
+            });
+                return "new User";
+            }else{
+                return "old User";
+            }
         }
+    }catch (e){
+        return null;
     }
+    return null;
 }
 
-exports.module  = {createUser}
+module.exports  = {createUser}

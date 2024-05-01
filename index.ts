@@ -26,7 +26,7 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
     const tokens  = await getToken(code);
     console.log("tokens",tokens)
     if(tokens!==null){
-        // await createUser(tokens.id_token);
+        await createUser(tokens.token_id);
         res.cookie("access_token",tokens.access_token,{
             httpOnly:true,
             domain: '.lsapee.com',
@@ -65,13 +65,6 @@ app.get("/api/getKeywords",async (req:Request,res:Response)=>{
     const keywords = await findAllkeyWords();
     res.send(keywords);
 })
-
-//userTest
-app.get("api/getUser",async (req:Request,res:Response)=>{
-    const tokenid = "";
-    await createUser(tokenid);
-})
-
 
 //메인 페이지
 app.get("/",(req:Request,res:Response)=>{
