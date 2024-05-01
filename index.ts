@@ -23,6 +23,7 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
     if(tokens!==null){
         res.cookie("access_token",tokens.access_token,{
             httpOnly:true,
+            domain: '.lsapee.com',
             secure: true,
             sameSite: 'none'
         });
