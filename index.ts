@@ -58,7 +58,6 @@ app.get("/api/getjob",cookieParser(), async (req:Request,res:Response)=>{
     if(typeof(startNum)==="string")  stnum = parseInt(startNum);
     const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum);
     const accessToken =req.cookies["access_token"];
-    console.log("accessToken",accessToken);
     res.send(myList);
 })
 //등록된 키워드 데이터 가져오기
