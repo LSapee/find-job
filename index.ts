@@ -14,7 +14,6 @@ app.use(cors({
 //json 데이터 파싱
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 // 자동 크롤링
 crawlingScheduler();
 //로그인시
@@ -44,7 +43,7 @@ app.get("/api/logout",async (req:Request,res:Response)=>{
    res.redirect("https://findjob.lsapee.com");
 });
 // DB 조회
-app.get("/api/getjob", async (req:Request,res:Response)=>{
+app.get("/api/getjob",cookieParser(), async (req:Request,res:Response)=>{
     const {search:keyword,expAll:expAll,exp:myExp,startNum:startNum} = req.query;
     // 추가 조회할 정보 데이터 시작번호
     let stnum:number =0;
@@ -52,6 +51,7 @@ app.get("/api/getjob", async (req:Request,res:Response)=>{
     const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum);
     const accessToken =req.cookies["access_token"];
     console.log("accessToken",accessToken);
+    console.log("cookies",req.cookies)
     res.send(myList);
 })
 //등록된 키워드 데이터 가져오기
