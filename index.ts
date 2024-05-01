@@ -8,9 +8,12 @@ const {crawlingScheduler} = require("./utils/scheduler")
 const {getToken,verifyToken,getName} = require("./auth/auth");
 const port = 3000;
 
-app.use(cors({
-    origin:"*"
-}));
+const corsOptions = {
+    origin: 'https://findjob.lsapee.com', // 허용할 오리진 명시
+    credentials: true, // 자격 증명(쿠키 등) 허용
+    optionsSuccessStatus: 200 // 일부 브라우저에서 요구하는 응답 상태
+};
+app.use(cors(corsOptions));
 //json 데이터 파싱
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
