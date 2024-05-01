@@ -24,9 +24,9 @@ crawlingScheduler();
 app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
     const tokens  = await getToken(code);
-    console.log("tokens",tokens)
+    let useris:string|null ="";
     if(tokens!==null){
-        await createUser(tokens.token_id);
+        useris = await createUser(tokens.token_id);
         res.cookie("access_token",tokens.access_token,{
             httpOnly:true,
             domain: '.lsapee.com',
@@ -39,6 +39,7 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
             sameSite: 'none'
         });
     }
+    console.log(useris)
     res.redirect("https://findjob.lsapee.com",);
 });
 //로그아웃시
