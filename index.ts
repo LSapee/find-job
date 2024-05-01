@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import {MyList} from "./types/myList";
 const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
-const {createUser} = require("./Repository/createUser.Repository");
+const {createUser} = require("./Repository/user.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
 const {getToken,verifyToken,getName} = require("./auth/auth");
 const port = 3000;

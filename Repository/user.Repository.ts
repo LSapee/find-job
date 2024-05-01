@@ -1,5 +1,5 @@
 import {prisma} from "./prismaDB";
-const {getName,getEmail} = require("./auth/auth");
+const {getName,getEmail} = require("../auth/auth");
 
 const createUser = async (token:string)=>{
     const name =await getName(token);
