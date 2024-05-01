@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import {MyList} from "./types/myList";
 const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
@@ -13,6 +14,7 @@ app.use(cors({
 //json 데이터 파싱
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 // 자동 크롤링
 crawlingScheduler();
 //로그인시
@@ -48,11 +50,8 @@ app.get("/api/getjob", async (req:Request,res:Response)=>{
     let stnum:number =0;
     if(typeof(startNum)==="string")  stnum = parseInt(startNum);
     const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum);
-    const mycookie = res.cookie("access_token",{httpOnly:true,
-        secure: true,
-        sameSite: 'none'}
-    );
-    console.log("mycookie",mycookie)
+    const accessToken =req.cookies["access_token"];
+    console.log("accessToken",accessToken);
     res.send(myList);
 })
 //등록된 키워드 데이터 가져오기
