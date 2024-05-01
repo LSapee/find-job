@@ -5,7 +5,7 @@ const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {crawlingScheduler} = require("./utils/scheduler")
 const {getToken,verifyToken,getName} = require("./auth/auth");
-const port = 3000;
+const port = 3001;
 
 app.use(cors({
     origin:"*"
@@ -23,8 +23,11 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
         res.cookie("access_token",tokens.access_token,{
             httpOnly:true,
             secure: true,
+            sameSite: 'none'
         });
-        res.cookie("access","true");
+        res.cookie("access","true",{
+            sameSite: 'none'
+        });
     }
     res.redirect("https://findjob.lsapee.com",);
 });
@@ -32,7 +35,6 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
 app.get("/api/logout",async (req:Request,res:Response)=>{
    res.redirect("https://findjob.lsapee.com");
 });
-
 // DB 조회
 app.get("/api/getjob", async (req:Request,res:Response)=>{
     const {search:keyword,expAll:expAll,exp:myExp,startNum:startNum} = req.query;
