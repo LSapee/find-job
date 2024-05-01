@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import {MyList} from "./types/myList";
 const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
+const {createUser} = require("./Repository/createUser.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
 const {getToken,verifyToken,getName} = require("./auth/auth");
 const port = 3000;
@@ -23,7 +24,9 @@ crawlingScheduler();
 app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
     const tokens  = await getToken(code);
+    console.log("tokens",tokens)
     if(tokens!==null){
+        // await createUser(tokens.id_token);
         res.cookie("access_token",tokens.access_token,{
             httpOnly:true,
             domain: '.lsapee.com',
@@ -55,7 +58,6 @@ app.get("/api/getjob",cookieParser(), async (req:Request,res:Response)=>{
     const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum);
     const accessToken =req.cookies["access_token"];
     console.log("accessToken",accessToken);
-    console.log("cookies",req.cookies)
     res.send(myList);
 })
 //등록된 키워드 데이터 가져오기
@@ -63,6 +65,14 @@ app.get("/api/getKeywords",async (req:Request,res:Response)=>{
     const keywords = await findAllkeyWords();
     res.send(keywords);
 })
+
+//userTest
+app.get("api/getUser",async (req:Request,res:Response)=>{
+    const tokenid = "";
+    await createUser(tokenid);
+})
+
+
 //메인 페이지
 app.get("/",(req:Request,res:Response)=>{
     res.sendFile(__dirname+"/src/index.html")

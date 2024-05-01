@@ -70,4 +70,11 @@ const getName= async (token:string):Promise<string|null> =>{
     return name;
 }
 
+const getEmail =async (token:string):Promise<string|null> =>{
+    let tokenData = await verifyToken(token);
+    if(tokenData === false|| typeof tokenData === 'string' || typeof tokenData === 'undefined') return null;
+    const email:string= tokenData.email
+    return email;
+}
+
 module.exports={getToken,verifyToken,getName}

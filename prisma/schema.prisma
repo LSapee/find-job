@@ -40,3 +40,22 @@ model Job_Keywords{
   keyword Keywords @relation(fields: [keyword_id], references: [id])
   @@id([posting_id, keyword_id])
 }
+
+model Users {
+  user_id     Int       @id @default(autoincrement())
+  username    String
+  email       String    @unique
+  oauth       String
+  submissions Submissions[]
+}
+
+model Submissions {
+  submission_id   Int       @id @default(autoincrement())
+  user_id         Int
+  company_name    String
+  job_title       String
+  site_name       String
+  submitted_date  DateTime  @default(now())
+  // User 테이블의 user_id 외래키 설정
+  user            Users      @relation(fields: [user_id], references: [user_id])
+}
