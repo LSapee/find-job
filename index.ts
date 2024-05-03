@@ -43,10 +43,8 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
 });
 //로그아웃시
 app.get("/api/logout",async (req:Request,res:Response)=>{
-    res.clearCookie("access_token");
-    res.clearCookie("access",{
-        domain: '.lsapee.com',
-    });
+    res.clearCookie("access_token",{domain: '.lsapee.com'});
+    res.clearCookie("access",{domain: '.lsapee.com'});
    res.redirect("https://findjob.lsapee.com");
 });
 // DB 조회
