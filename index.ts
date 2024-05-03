@@ -25,7 +25,7 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
     const tokens  = await getToken(code);
     let useris:string|null ="";
-    if(tokens!==null){
+    if(tokens!==null ||tokens!==undefined){
         useris = await createUser(tokens.id_token);
         res.cookie("access_token",tokens.access_token,{
             httpOnly:true,
@@ -39,7 +39,6 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
             sameSite: 'none'
         });
     }
-    console.log(useris)
     res.redirect("https://findjob.lsapee.com",);
 });
 //로그아웃시

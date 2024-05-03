@@ -62,15 +62,6 @@ const verifyToken = async (token:string|null):Promise<VerifyResult|false> =>{
         });
     });
 };
-//id토큰에서 이름값만 추출
-const getOauthName= async (token:string):Promise<string|null> =>{
-    let tokenData = await verifyToken(token);
-    if(tokenData === false|| typeof tokenData === 'string' || typeof tokenData === 'undefined') return null;
-    const name:string= tokenData["cognito:username"]
-    if(name===undefined) return null;
-    return name;
-}
-
 const getEmail = async (token:string):Promise<string|null> =>{
     let tokenData = await verifyToken(token);
     if(tokenData === false|| typeof tokenData === 'string' || typeof tokenData === 'undefined') return null;
@@ -87,4 +78,4 @@ const getName= async (token:string):Promise<string|null> =>{
     return name;
 }
 
-module.exports={getToken,verifyToken,getOauthName,getEmail,getName}
+module.exports={getToken,verifyToken,getEmail,getName}
