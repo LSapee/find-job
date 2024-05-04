@@ -5,6 +5,8 @@ const loginUser = async (token:string):Promise<boolean> =>{
     try{
         const email =await getEmail(token);
         const name = await getName(token);
+        console.log("name",name)
+        console.log("email",email)
         if(name!==null &&email!==null ){
             const UserFind = await prisma.users.findFirst({
                 where:{
@@ -22,6 +24,7 @@ const loginUser = async (token:string):Promise<boolean> =>{
             }
         }
     }catch (e){
+        console.log("error",e);
         return false;
     }
     return true;
