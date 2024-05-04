@@ -6,11 +6,12 @@ const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {createUser} = require("./Repository/user.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
-const {getToken,verifyToken,getName} = require("./auth/auth");
-const port = 3000;
+const {getToken,verifyToken,getName,getEmail} = require("./auth/auth");
+const port = 3001;
 
 const corsOptions = {
     origin: 'https://findjob.lsapee.com', // 허용할 오리진 명시
+    // origin: 'http://localhost:3000', // 허용할 오리진 명시
     credentials: true, // 자격 증명(쿠키 등) 허용
     optionsSuccessStatus: 200 // 일부 브라우저에서 요구하는 응답 상태
 };
@@ -26,7 +27,7 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
     const tokens  = await getToken(code);
     const loginTF  = await createUser(tokens.id_token);
     if(!loginTF) res.redirect("https://findjob.lsapee.com");
-    if(tokens!==null ||tokens!==undefined){
+    else if(tokens!==null ||tokens!==undefined){
         res.cookie("access_token",tokens.access_token,{
             httpOnly:true,
             domain: '.lsapee.com',
@@ -49,6 +50,9 @@ app.get("/api/logout",async (req:Request,res:Response)=>{
 });
 // DB 조회
 app.get("/api/getjob",cookieParser(), async (req:Request,res:Response)=>{
+    const access_Token = req.cookies["access_token"];
+    const userEmail = await getEmail(access_Token)
+    console.log("userEmail",userEmail)
     const {search:keyword,expAll:expAll,exp:myExp,startNum:startNum} = req.query;
     // 추가 조회할 정보 데이터 시작번호
     let stnum:number =0;
