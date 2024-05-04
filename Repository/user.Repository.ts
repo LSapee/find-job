@@ -1,7 +1,7 @@
 import {prisma} from "./prismaDB";
 const {getEmail,getName} = require("../auth/auth");
 
-const createUser = async (token:string):Promise<boolean> =>{
+const loginUser = async (token:string):Promise<boolean> =>{
     try{
         const email =await getEmail(token);
         const name = await getName(token);
@@ -27,4 +27,4 @@ const createUser = async (token:string):Promise<boolean> =>{
     return true;
 }
 
-module.exports  = {createUser}
+module.exports  = {loginUser}

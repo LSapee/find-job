@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import {MyList} from "./types/myList";
 const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
-const {createUser} = require("./Repository/user.Repository");
+const {loginUser} = require("./Repository/user.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
 const {getToken,verifyToken,getName,getEmail} = require("./auth/auth");
 const port = 3000;
@@ -25,20 +25,21 @@ crawlingScheduler();
 app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
     const tokens  = await getToken(code);
-    const loginTF  = await createUser(tokens.id_token);
-    if(!loginTF) res.redirect("https://findjob.lsapee.com");
-    else if(tokens!==null ||tokens!==undefined){
-        res.cookie("access_token",tokens.access_token,{
-            httpOnly:true,
-            domain: '.lsapee.com',
-            secure: true,
-            sameSite: 'none'
-        });
-        res.cookie("access","true",{
-            domain: '.lsapee.com',
-            secure: true,
-            sameSite: 'none'
-        });
+    const loginTF  = await loginUser(tokens.id_token);
+    if(loginTF) {
+        if(tokens!==null ||tokens!==undefined){
+            res.cookie("access_token",tokens.access_token,{
+                httpOnly:true,
+                domain: '.lsapee.com',
+                secure: true,
+                sameSite: 'none'
+            });
+            res.cookie("access","true",{
+                domain: '.lsapee.com',
+                secure: true,
+                sameSite: 'none'
+            });
+        }
     }
     res.redirect("https://findjob.lsapee.com");
 });
