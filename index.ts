@@ -7,7 +7,7 @@ const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {createUser} = require("./Repository/user.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
 const {getToken,verifyToken,getName,getEmail} = require("./auth/auth");
-const port = 3001;
+const port = 3000;
 
 const corsOptions = {
     origin: 'https://findjob.lsapee.com', // 허용할 오리진 명시
