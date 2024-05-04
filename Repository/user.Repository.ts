@@ -10,10 +10,10 @@ const loginUser = async (token:string):Promise<boolean> =>{
         if(name!==null &&email!==null ){
             const UserFind = await prisma.users.findFirst({
                 where:{
-                    username:name,
                     email:email,
                 }
             })
+            console.log("UserFind",UserFind)
             if(UserFind===null) {
                 await prisma.users.create({
                     data:{
