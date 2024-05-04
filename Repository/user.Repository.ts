@@ -5,15 +5,12 @@ const loginUser = async (token:string):Promise<boolean> =>{
     try{
         const email =await getEmail(token);
         const name = await getName(token);
-        console.log("name",name)
-        console.log("email",email)
         if(name!==null &&email!==null ){
             const UserFind = await prisma.users.findFirst({
                 where:{
                     email:email,
                 }
             })
-            console.log("UserFind",UserFind)
             if(UserFind===null) {
                 await prisma.users.create({
                     data:{
