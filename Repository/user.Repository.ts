@@ -66,6 +66,7 @@ const loginUser = async (token:string):Promise<boolean> =>{
 //리프레시 토큰 가져오기
 const getRefreshToken = async (access_token:string): Promise<string|null> =>{
     let refresh_token:string = "";
+    console.log("refresh_token 가져오기");
     try{
         const tokens = await prisma.tokens.findFirst({
             where:{
@@ -79,6 +80,7 @@ const getRefreshToken = async (access_token:string): Promise<string|null> =>{
     }catch(err){
         return null;
     }
+    console.log("refresh_token 가져오기 성공")
     return refresh_token;
 }
 //리프레시 토큰 및 엑세스 토큰 DB에 저장

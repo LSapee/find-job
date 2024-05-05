@@ -3,7 +3,6 @@ import qs from "qs";
 import * as jwt from 'jsonwebtoken';
 import { JwksClient } from 'jwks-rsa';
 import {idTokenType,accessTokenType} from '../types/types';
-import {NextFunction} from "express";
 const {getRefreshToken,deleteRefreshToken,updateAccessToken} = require("../Repository/user.Repository");
 
 const COGNITO_ISSUER = `https://cognito-idp.${process.env.AWS_REGION}.amazonaws.com/${process.env.COGNITO_USER_POOL_ID}`;
