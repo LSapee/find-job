@@ -119,4 +119,25 @@ const updateAccessToken = async (refresh_token:string,access_token:string):Promi
     }
     return true;
 }
-module.exports  = {loginUser,saveTokens,getRefreshToken,updateAccessToken}
+// 리프레시 토큰 삭제
+const deleteRefreshToken  = async (refresh_token:string):Promise<void> =>{
+    try{
+        const tokenID = await prisma.tokens.findFirst({
+            where:{
+                refresh_token:refresh_token
+            }
+        })
+        if(tokenID===null){
+            throw new Error("토큰이 없어요");
+        }
+        await prisma.tokens.delete({
+            where:{
+                token_id:tokenID.token_id
+            }
+        })
+    }catch (e){
+        console.log("이미 토큰이 삭제되었어요")
+    }
+
+}
+module.exports  = {loginUser,saveTokens,getRefreshToken,updateAccessToken,deleteRefreshToken}

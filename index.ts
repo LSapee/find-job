@@ -6,7 +6,7 @@ const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {loginUser,saveTokens} = require("./Repository/user.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
-const {getToken} = require("./auth/auth");
+const {getToken,isLoggedIn} = require("./auth/auth");
 const port = 3000;
 
 const corsOptions = {
@@ -49,13 +49,24 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
 app.get("/api/getjob",cookieParser(), async (req:Request,res:Response)=>{
     // access_token 가져오기
     const access_Token = req.cookies["access_token"];
-    console.log("access_Token",access_Token);
-    console.log("!!access_Token",!!access_Token);
+    const hasAccessToken:boolean = !!access_Token;
+    const LoginT = await isLoggedIn(access_Token);
+    if(hasAccessToken){
+        //토큰 검증에서 에러 발생하면 로그아웃 처리
+        if(!LoginT.sign) return res.redirect("/api/logout");
+        res.cookie("access_token",LoginT.access_Token,{
+            httpOnly:true,
+            domain: '.lsapee.com',
+            secure: true,
+            sameSite: 'none'
+        });
+    }
     const {search:keyword,expAll:expAll,exp:myExp,startNum:startNum} = req.query;
     // 추가 조회할 정보 데이터 시작번호
     let stnum:number =0;
     if(typeof(startNum)==="string")  stnum = parseInt(startNum);
-    const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum);
+    const loggedIn:boolean =LoginT.sign;
+    const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum,loggedIn);
     res.send(myList);
 })
 //등록된 키워드 데이터 가져오기

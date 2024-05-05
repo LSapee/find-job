@@ -51,6 +51,7 @@ export type accessTokenType = {
     iat: number;
     jti: string;
     username: string;
+    error?: string;
 }
 
 /*
