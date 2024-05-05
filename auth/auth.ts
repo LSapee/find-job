@@ -3,8 +3,10 @@ import qs from "qs";
 import * as jwt from 'jsonwebtoken';
 import { JwksClient } from 'jwks-rsa';
 import {idTokenType,accessTokenType} from '../types/types';
+const {getRefreshToken} = require("../Repository/user.Repository");
 
 const COGNITO_ISSUER = `https://cognito-idp.${process.env.AWS_REGION}.amazonaws.com/${process.env.COGNITO_USER_POOL_ID}`;
+const tokenEndpoint = `${process.env.MYURL}/oauth2/token`;
 
 const getToken =async (code:string):Promise<string|null> =>{
     let data;
@@ -14,9 +16,8 @@ const getToken =async (code:string):Promise<string|null> =>{
         redirect_uri: process.env.REDIRECT_URI,
         code: code,
     });
-    const tokenUrl = `${process.env.MYURL}/oauth2/token`;
     try {
-        const response = await fetch(tokenUrl, {
+        const response = await fetch(tokenEndpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -53,9 +54,28 @@ const verifyIdToken = async (token:string|null):Promise<VerifyIdTokenResult|fals
         jwt.verify(token, getKey, {
             issuer: process.env.JWKSURI,
             algorithms: ['RS256']
-        }, (err, decoded) => {
+        }, async (err, decoded) => {
             if (err) {
-                reject(err);
+                try {
+                    const refreshToken = await getRefreshToken(token);
+                    const response = await fetch(tokenEndpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ refresh_token: refreshToken })
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        const newDecoded = jwt.decode(data.access_token); // 새 토큰 디코드
+                        console.log('Decoded New Token:', newDecoded); // 디코드된 토큰 내용 출력
+                        resolve(data.access_token); // 새 액세스 토큰 반환
+                    } else {
+                        reject(data); // API 오류 처리
+                    }
+                } catch (error) {
+                    reject(error); // 네트워크 오류 처리
+                }
             } else {
                 resolve(decoded as idTokenType);
             }

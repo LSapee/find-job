@@ -2,6 +2,7 @@ import {prisma} from "./prismaDB";
 const {verifyIdToken} = require("../auth/auth");
 import {idTokenType} from '../types/types';
 
+//로그인 하기 -> 아이디 없을경우 생성 있을경우 로그인 처리
 const loginUser = async (token:string):Promise<boolean> =>{
     try{
         const tokenData:idTokenType = await verifyIdToken(token)
@@ -62,5 +63,60 @@ const loginUser = async (token:string):Promise<boolean> =>{
     }
     return true;
 }
-
-module.exports  = {loginUser}
+//리프레시 토큰 가져오기
+const getRefreshToken = async (access_token:string): Promise<string|null> =>{
+    let refresh_token:string = "";
+    try{
+        const tokens = await prisma.tokens.findFirst({
+            where:{
+                access_token:access_token
+            }
+        })
+        if(tokens===null){
+            throw new Error("토큰 없어");
+        }
+        refresh_token= tokens.refresh_token;
+    }catch(err){
+        return null;
+    }
+    return refresh_token;
+}
+//리프레시 토큰 및 엑세스 토큰 DB에 저장
+const saveTokens = async (refresh_token:string,access_token:string):Promise<boolean>=>{
+    try{
+        await prisma.tokens.create({
+            data:{
+                refresh_token:refresh_token,
+                access_token:access_token
+            }
+        })
+    }catch (e){
+        return false;
+    }
+    return true;
+}
+//리프레시 토큰으로 엑세스 토큰 받기
+const updateAccessToken = async (refresh_token:string,access_token:string):Promise<boolean> =>{
+    try{
+        const tokenID = await prisma.tokens.findFirst({
+            where:{
+                refresh_token:refresh_token
+            }
+        })
+        if(tokenID===null){
+            throw new Error("토큰이 없어요");
+        }
+        await prisma.tokens.update({
+            where:{
+                token_id :tokenID.token_id
+            },
+            data:{
+                access_token:access_token
+            }
+        })
+    }catch (e){
+        return false;
+    }
+    return true;
+}
+module.exports  = {loginUser,saveTokens,getRefreshToken,updateAccessToken}

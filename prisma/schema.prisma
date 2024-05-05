@@ -50,6 +50,12 @@ model Users {
   submissions   Submissions[]
 }
 
+model tokens {
+  token_id Int @id @default(autoincrement())
+  refresh_token String
+  access_token String
+}
+
 model Submissions {
   submission_id   Int       @id @default(autoincrement())
   user_id         Int

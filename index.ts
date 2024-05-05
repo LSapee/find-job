@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import {MyList} from "./types/types";
 const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
-const {loginUser} = require("./Repository/user.Repository");
+const {loginUser,saveTokens} = require("./Repository/user.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
 const {getToken} = require("./auth/auth");
 const port = 3000;
@@ -25,7 +25,6 @@ crawlingScheduler();
 app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
     const tokens  = await getToken(code);
-    console.log("idToken",tokens.id_token);
     const loginTF  = await loginUser(tokens.id_token);
     if(loginTF) {
         if(tokens!==null ||tokens!==undefined){
@@ -40,6 +39,7 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
                 secure: true,
                 sameSite: 'none'
             });
+            await saveTokens(tokens.refresh_token,tokens.access_token);
         }
     }
     res.redirect("https://findjob.lsapee.com");
@@ -67,7 +67,6 @@ app.get("/api/logout",async (req:Request,res:Response)=>{
     res.clearCookie("access",{domain: '.lsapee.com'});
     res.redirect("https://findjob.lsapee.com");
 });
-
 //메인 페이지
 app.get("/",(req:Request,res:Response)=>{
     res.sendFile(__dirname+"/src/index.html")
