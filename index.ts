@@ -49,6 +49,8 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
 app.get("/api/getjob",cookieParser(), async (req:Request,res:Response)=>{
     // access_token 가져오기
     const access_Token = req.cookies["access_token"];
+    console.log(access_Token);
+
     const {search:keyword,expAll:expAll,exp:myExp,startNum:startNum} = req.query;
     // 추가 조회할 정보 데이터 시작번호
     let stnum:number =0;
