@@ -51,7 +51,7 @@ app.get("/api/logout",async (req:Request,res:Response)=>{
     res.redirect("https://findjob.lsapee.com");
 });
 // job DB 조회
-app.get("/api/getjobs",cookieParser(), async (req:Request,res:Response)=>{
+app.get("/api/getjob",cookieParser(), async (req:Request,res:Response)=>{
     // access_token 가져오기
     const access_Token = req.cookies["access_token"];
     const hasAccessToken:boolean = !!access_Token;
