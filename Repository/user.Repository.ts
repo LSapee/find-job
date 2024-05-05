@@ -84,6 +84,7 @@ const getRefreshToken = async (access_token:string): Promise<string|null> =>{
 //리프레시 토큰 및 엑세스 토큰 DB에 저장
 const saveTokens = async (refresh_token:string,access_token:string):Promise<boolean>=>{
     try{
+        console.log("토큰 저장 진입")
         await prisma.tokens.create({
             data:{
                 refresh_token:refresh_token,
@@ -91,6 +92,7 @@ const saveTokens = async (refresh_token:string,access_token:string):Promise<bool
             }
         })
     }catch (e){
+        console.log("e",e);
         return false;
     }
     return true;
