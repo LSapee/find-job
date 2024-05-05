@@ -9,8 +9,8 @@ const COGNITO_ISSUER = `https://cognito-idp.${process.env.AWS_REGION}.amazonaws.
 const tokenEndpoint = `${process.env.MYURL}/oauth2/token`;
 
 interface TokenResponse {
-    accessToken: string;
-    decoded: VerifyAccessTokenResult;
+    accessToken: string|boolean;
+    decoded?: VerifyAccessTokenResult;
 }
 interface isLoggedInResponse{
     accessToken: string;
@@ -102,10 +102,10 @@ const verifyAccessToken = async (token:string|null):Promise<TokenResponse|false>
                         resolve({accessToken: data.access_token, decoded: newDecoded} );
                     } else {
                         await deleteRefreshToken(refreshToken);
-                        reject(data); // API 오류 처리
+                        reject(false ); // API 오류 처리
                     }
                 } catch (error) {
-                    reject(error); // 네트워크 오류 처리
+                    reject(false);  // 네트워크 오류 처리
                 }
             } else {
                 resolve({ accessToken: token, decoded: decoded as accessTokenType });
