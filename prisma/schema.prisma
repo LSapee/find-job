@@ -42,10 +42,12 @@ model Job_Keywords{
 }
 
 model Users {
-  user_id     Int       @id @default(autoincrement())
-  username    String
-  email       String    @unique
-  submissions Submissions[]
+  user_id       Int       @id @default(autoincrement())
+  username      String
+  email         String    @unique
+  cognito_name  String?
+  google_name   String?
+  submissions   Submissions[]
 }
 
 model Submissions {
@@ -53,7 +55,7 @@ model Submissions {
   user_id         Int
   company_name    String
   job_title       String
-  site_name       String
+  site_name       String?
   submitted_date  DateTime  @default(now())
   // User 테이블의 user_id 외래키 설정
   user            Users      @relation(fields: [user_id], references: [user_id])

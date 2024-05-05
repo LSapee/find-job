@@ -1,6 +1,6 @@
 import {Builder, Browser, By, Key, until, WebDriver, logging, WebElement} from 'selenium-webdriver'
 import chrome from "selenium-webdriver/chrome"
-import {MyList} from "../types/myList";
+import {MyList} from "../types/types";
 const {hasElement,hasURL,hasNextPage,exps,expOk,companyReNamed} = require("../utils/utils");
 const {makeCSV} = require("../makeCSV/makeCSV")
 const {crawlerRepository} =require("../Repository/crawler.Repository");

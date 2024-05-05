@@ -1,7 +1,7 @@
 import {prisma} from "./prismaDB";
-import {MyList} from "../types/myList";
+import {MyList} from "../types/types";
 
-const crawlerRepository =async (Mylists:MyList[],keyWord:string):Promise<boolean> =>{
+const crawlerRepository =async (Mylists:MyList[], keyWord:string):Promise<boolean> =>{
     let ans :boolean = true;
     try{
         // 키워드 ID 찾기

@@ -16,9 +16,8 @@ type Identity ={
     issuer?: null | string; // 옵셔널로 변경
     primary?: string; // 옵셔널로 변경
 }
-
-export type DecodedTokenType ={
-    at_hash?: string;
+export type idTokenType ={
+    at_hash: string;
     sub: string;
     "cognito:groups"?: string[];
     email_verified: boolean;
@@ -26,7 +25,8 @@ export type DecodedTokenType ={
     "cognito:username": string;
     origin_jti: string;
     aud: string;
-    identities?: Identity[]; // 옵셔널로 변경
+    nonce?:string;
+    identities?: Identity[];
     token_use: string;
     auth_time: number;
     name: string;
@@ -34,8 +34,23 @@ export type DecodedTokenType ={
     iat: number;
     jti: string;
     email: string;
-    event_id?: string; // 새로 추가된 필드
-    given_name?:string;
+    event_id?: string;
+    given_name:string;
+}
+export type accessTokenType = {
+    sub: string;
+    "cognito:groups"?: string[];
+    iss: string;
+    version: number;
+    client_id: string;
+    origin_jti: string;
+    token_use: string;
+    scope: string;
+    auth_time: number;
+    exp: number;
+    iat: number;
+    jti: string;
+    username: string;
 }
 
 /*

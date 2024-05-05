@@ -1,5 +1,5 @@
 import {prisma} from "./prismaDB";
-import {MyList} from "../types/myList";
+import {MyList} from "../types/types";
 
 const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumber:number):Promise<MyList[]|boolean>=>{
     const myList:MyList[] = [];

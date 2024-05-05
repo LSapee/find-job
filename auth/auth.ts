@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import qs from "qs";
 import * as jwt from 'jsonwebtoken';
 import { JwksClient } from 'jwks-rsa';
-import {DecodedTokenType} from '../types/myList';
+import {idTokenType,accessTokenType} from '../types/types';
 
 const COGNITO_ISSUER = `https://cognito-idp.${process.env.AWS_REGION}.amazonaws.com/${process.env.COGNITO_USER_POOL_ID}`;
 
@@ -46,8 +46,8 @@ const getKey = (header:jwt.JwtHeader, callback:jwt.SigningKeyCallback):void=>{
 }
 
 // 토큰 검사
-type VerifyResult = DecodedTokenType | string | undefined;
-const verifyToken = async (token:string|null):Promise<VerifyResult|false> =>{
+type VerifyIdTokenResult = idTokenType | string | undefined;
+const verifyIdToken = async (token:string|null):Promise<VerifyIdTokenResult|false> =>{
     if(token===null) return false;
     return new Promise((resolve, reject) => {
         jwt.verify(token, getKey, {
@@ -57,25 +57,26 @@ const verifyToken = async (token:string|null):Promise<VerifyResult|false> =>{
             if (err) {
                 reject(err);
             } else {
-                resolve(decoded as DecodedTokenType);
+                resolve(decoded as idTokenType);
             }
         });
     });
 };
-const getEmail = async (token:string):Promise<string|null> =>{
-    let tokenData = await verifyToken(token);
-    if(tokenData === false|| typeof tokenData === 'string' || typeof tokenData === 'undefined') return null;
-    const email:string= tokenData.email
-    if(email===undefined) return null;
-    return email;
-}
+type VerifyAccessTokenResult = accessTokenType | string | undefined;
+const verifyAccessToken = async (token:string|null):Promise<VerifyAccessTokenResult|false> =>{
+    if(token===null) return false;
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, getKey, {
+            issuer: process.env.JWKSURI,
+            algorithms: ['RS256']
+        }, (err, decoded) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(decoded as accessTokenType);
+            }
+        });
+    });
+};
 
-const getName= async (token:string):Promise<string|null> =>{
-    let tokenData = await verifyToken(token);
-    if(tokenData === false|| typeof tokenData === 'string' || typeof tokenData === 'undefined') return null;
-    const name:string|undefined= tokenData.given_name
-    if(name===undefined) return null;
-    return name;
-}
-
-module.exports={getToken,verifyToken,getEmail,getName}
+module.exports={getToken,verifyIdToken,verifyAccessToken}

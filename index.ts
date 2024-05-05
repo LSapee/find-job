@@ -1,12 +1,12 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import {MyList} from "./types/myList";
+import {MyList} from "./types/types";
 const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {loginUser} = require("./Repository/user.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
-const {getToken,verifyToken,getName,getEmail} = require("./auth/auth");
+const {getToken} = require("./auth/auth");
 const port = 3000;
 
 const corsOptions = {
