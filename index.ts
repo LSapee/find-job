@@ -44,14 +44,19 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
     }
     res.redirect("https://findjob.lsapee.com");
 });
-
-// DB 조회
-app.get("/api/getjob",cookieParser(), async (req:Request,res:Response)=>{
+//로그아웃시
+app.get("/api/logout",async (req:Request,res:Response)=>{
+    res.clearCookie("access_token",{domain: '.lsapee.com'});
+    res.clearCookie("access",{domain: '.lsapee.com'});
+    res.redirect("https://findjob.lsapee.com");
+});
+// job DB 조회
+app.get("/api/getjobs",cookieParser(), async (req:Request,res:Response)=>{
     // access_token 가져오기
     const access_Token = req.cookies["access_token"];
     const hasAccessToken:boolean = !!access_Token;
     const LoginT = await isLoggedIn(access_Token);
-    console.log("LoginT",LoginT)
+    console.log("hasAccessToken",hasAccessToken);
     if(hasAccessToken){
         //토큰 검증에서 에러 발생하면 로그아웃 처리
         if(!LoginT.sign) return res.redirect("https://findjobapi.lsapee.com/api/logout");
@@ -75,12 +80,16 @@ app.get("/api/getKeywords",async (req:Request,res:Response)=>{
     const keywords = await findAllkeyWords();
     res.send(keywords);
 })
-//로그아웃시
-app.get("/api/logout",async (req:Request,res:Response)=>{
-    res.clearCookie("access_token",{domain: '.lsapee.com'});
-    res.clearCookie("access",{domain: '.lsapee.com'});
-    res.redirect("https://findjob.lsapee.com");
-});
+// 해당 회사 공고 보지 않기
+app.post("/api/companys",async (req:Request,res:Response)=>{
+
+})
+//해당 회사 공고 지원 완료
+app.post("/api/companyT",async (req:Request,res:Response)=>{
+
+})
+
+
 //메인 페이지
 app.get("/",(req:Request,res:Response)=>{
     res.sendFile(__dirname+"/src/index.html")

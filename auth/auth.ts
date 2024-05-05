@@ -117,7 +117,6 @@ const verifyAccessToken = async (token:string|null):Promise<TokenResponse|false>
 
 const isLoggedIn = async (access_token:string):Promise<isLoggedInResponse> => {
     const tokenData = await verifyAccessToken(access_token).catch(e=>{return null});
-    console.log("tokenData",tokenData)
     let myTokenisError = false;
     if(!tokenData) return ({accessToken: access_token, sign :myTokenisError})
     else if(tokenData===undefined){
