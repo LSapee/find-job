@@ -51,9 +51,11 @@ app.get("/api/getjob",cookieParser(), async (req:Request,res:Response)=>{
     const access_Token = req.cookies["access_token"];
     const hasAccessToken:boolean = !!access_Token;
     const LoginT = await isLoggedIn(access_Token);
+    console.log("LoginT",LoginT)
+    console.log("hasAccessToken",hasAccessToken)
     if(hasAccessToken){
         //토큰 검증에서 에러 발생하면 로그아웃 처리
-        if(!LoginT.sign) return res.redirect("/api/logout");
+        if(!LoginT.sign) return res.redirect("https://findjobapi.lsapee.com/api/logout");
         res.cookie("access_token",LoginT.access_Token,{
             httpOnly:true,
             domain: '.lsapee.com',
