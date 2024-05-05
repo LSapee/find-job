@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import {MyList} from "../types/myList";
+import {MyList} from "../types/types";
 
 const makeFile = (fileName:string,keyword:string,csvContent:string,cnt:number):void=>{
     fs.writeFile(path.join(__dirname, `${fileName}${keyword}0${cnt}.csv`), csvContent, 'utf8', (err) => {
@@ -18,7 +18,7 @@ const csvContentClear = (fileName:string,keyword:string,csvContent:string,cnt:nu
     return csvContent;
 }
 
-export const makeCSV = (targetSite:string,myList:MyList[],keyword:string):void=>{
+export const makeCSV = (targetSite:string, myList:MyList[], keyword:string):void=>{
     let csvContent:string = "회사명,공고제목,경력,학력,지역,기술스택,마감일,링크\n";
     let fileName:string = targetSite;
     let count:number =0;
