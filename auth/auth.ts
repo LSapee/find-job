@@ -86,6 +86,7 @@ const verifyAccessToken = async (token:string|null):Promise<TokenResponse|false>
                 try {
                     console.log("accessToken 오류 있음")
                     const refreshToken = await getRefreshToken(token);
+                    console.log("refreshToken 존재 여부",refreshToken)
                     const response = await fetch(tokenEndpoint, {
                         method: 'POST',
                         headers: {
