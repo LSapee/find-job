@@ -6,18 +6,17 @@ const loginUser = async (token:string):Promise<boolean> =>{
     try{
         const tokenData:idTokenType = await verifyIdToken(token)
         const oauthLogin = tokenData["identities"];
-        console.log(tokenData["identities"])
         const oauthName:string = tokenData["cognito:username"];
         const userName:string = tokenData.given_name;
         const userEmail:string = tokenData.email;
-        if(oauthLogin===undefined) {
-            //cognito login의 경우
-            const UserFind = await prisma.users.findFirst({
-                where: {
-                    cognito_name: oauthName,
-                }
-            });
-            if(UserFind===null){
+        const UserHasId = await prisma.users.findFirst({
+            where:{
+                email:userEmail
+            }
+        });
+        // User가 없을경우 유저 생성
+        if(UserHasId===null){
+            if(oauthLogin===undefined) {
                 await prisma.users.create({
                     data:{
                         username:userName,
@@ -25,15 +24,7 @@ const loginUser = async (token:string):Promise<boolean> =>{
                         email:userEmail,
                     }
                 })
-            }
-        }else{
-            // google login
-            const UserFind = await prisma.users.findFirst({
-                where: {
-                    google_name: oauthName,
-                }
-            });
-            if(UserFind===null){
+            }else{
                 await prisma.users.create({
                     data:{
                         username:userName,
@@ -42,6 +33,27 @@ const loginUser = async (token:string):Promise<boolean> =>{
                     }
                 })
             }
+        }else{
+           // 유저가 있을경우 프로필만 업데이트 해주기
+           if(oauthName===undefined){
+               await prisma.users.update({
+                   where:{
+                       email:userEmail
+                   },
+                   data:{
+                       cognito_name:oauthName
+                   }
+               })
+           }else{
+               await prisma.users.update({
+                   where:{
+                       email:userEmail
+                   },
+                   data:{
+                       google_name:oauthName
+                   }
+               })
+           }
         }
 
     }catch (e){
