@@ -35,7 +35,7 @@ const loginUser = async (token:string):Promise<boolean> =>{
             }
         }else{
            // 유저가 있을경우 프로필만 업데이트 해주기
-           if(oauthName===undefined){
+           if(oauthLogin===undefined){
                await prisma.users.update({
                    where:{
                        email:userEmail
