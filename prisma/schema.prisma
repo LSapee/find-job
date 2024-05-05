@@ -50,7 +50,7 @@ model Users {
   submissions   Submissions[]
 }
 
-model tokens {
+model Tokens {
   token_id Int @id @default(autoincrement())
   refresh_token String
   access_token String
