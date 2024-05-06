@@ -7,7 +7,7 @@ const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {loginUser,saveTokens} = require("./Repository/user.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
-const {getToken} = require("./auth/auth");
+const {getToken,verifyIdToken} = require("./auth/auth");
 const port = 3000;
 
 const corsOptions = {
@@ -27,6 +27,7 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
     const tokens  = await getToken(code);
     console.log("code",code);
+    console.log("verifyIdToken",verifyIdToken)
     const loginTF  = await loginUser(tokens.id_token);
     if(loginTF) {
         if(tokens!==null ||tokens!==undefined){

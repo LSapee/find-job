@@ -1,6 +1,7 @@
 import {prisma} from "./prismaDB";
 import {MyList} from "../types/types";
 
+
 const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumber:number,loggedIn:boolean):Promise<MyList[]|boolean>=>{
     const myList:MyList[] = [];
     console.log("loggedIn findJob :",loggedIn)

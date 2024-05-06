@@ -1,12 +1,10 @@
 import {prisma} from "./prismaDB";
 const {verifyIdToken} = require("../auth/auth");
 import {idTokenType} from '../types/types';
-
 //로그인 하기 -> 아이디 없을경우 생성 있을경우 로그인 처리
 const loginUser = async (token:string|null):Promise<boolean|string> =>{
     let email:string = "";
     try{
-        console.log(verifyIdToken);
         const tokenData:idTokenType = await verifyIdToken(token)
         const oauthLogin = tokenData["identities"];
         const oauthName:string = tokenData["cognito:username"];
@@ -60,12 +58,13 @@ const loginUser = async (token:string|null):Promise<boolean|string> =>{
         }
         email=userEmail;
     }catch (e){
-        console.log("error",e);
+
+        console.log("error LoginUser",e);
         return false;
     }
     return email;
 }
-//리프레시 토큰 가져오기
+// 리프레시 토큰 가져오기
 const getRefreshToken = async (access_token:string): Promise<string|null> =>{
     let refresh_token:string = "";
     console.log("refresh_token 가져오기");
