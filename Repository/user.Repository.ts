@@ -5,6 +5,7 @@ import {idTokenType} from '../types/types';
 //로그인 하기 -> 아이디 없을경우 생성 있을경우 로그인 처리
 const loginUser = async (token:string):Promise<boolean|string> =>{
     let email:string = "";
+    console.log(token);
     try{
         const tokenData:idTokenType = await verifyIdToken(token)
         const oauthLogin = tokenData["identities"];
