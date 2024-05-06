@@ -98,14 +98,14 @@ export async function requireLogin(req: Request, res: Response, next: NextFuncti
     console.log(accessToken,"accessToken")
     if (!accessToken) {
         console.log("로그인 필요");
-        return res.redirect("https://login.lsapee.com"); // 로그인 페이지 URL로 변경하세요
+        return res.redirect("https://findjob.lsapee.com"); // 로그인 페이지 URL로 변경하세요
     } else {
         console.log("로그인 검증 중");
         const TokenT = await isLoggedIn(accessToken);
         if (TokenT === null || TokenT.sign === false) {
             res.clearCookie("access_token", { domain: '.lsapee.com' });
             res.clearCookie("access", { domain: '.lsapee.com' });
-            return res.redirect("https://login.lsapee.com"); // 로그인 페이지 URL로 변경하세요
+            return res.redirect("https://findjob.lsapee.com"); // 로그인 페이지 URL로 변경하세요
         } else {
             next();
         }
