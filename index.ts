@@ -85,7 +85,6 @@ app.post("/api/companys",requireLogin,async (req:Request,res:Response)=>{
 // 내가 공고 보지 않기로 한 회사 목록
 app.get("/api/companys",requireLogin,async (req:Request,res:Response)=>{
     const access_token:string = req.cookies["access_token"];
-    console.log("access_token",access_token)
     const companys = await neverSeeCompanys(access_token);
     res.send(companys);
 })
