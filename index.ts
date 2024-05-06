@@ -9,7 +9,7 @@ const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {loginUser,saveTokens,deleteAccessToken} = require("./Repository/user.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
-const {neverSee,neverSeeCompanys} = require("./Repository/compony.Repository")
+const {neverSee,neverSeeCompanys,delneverSeeCompany} = require("./Repository/compony.Repository")
 const {getToken} = require("./auth/auth");
 
 const port = 3000;
@@ -88,6 +88,14 @@ app.get("/api/companys",requireLogin,async (req:Request,res:Response)=>{
     const companys = await neverSeeCompanys(access_token);
     res.send(companys);
 })
+// 내가 공고 보지 않기로 한 회사 목록 취소
+app.delete("/api/companys",requireLogin,async (req:Request,res:Response)=>{
+    const access_token:string = req.cookies["access_token"];
+    const {companyName} = req.body
+    await delneverSeeCompany(access_token,companyName);
+    res.send({"SSS":"성공"})
+})
+
 //해당 회사 공고 지원 완료
 app.post("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
 

@@ -1,5 +1,4 @@
 import {prisma} from "./prismaDB";
-import * as http from "node:http";
 
 //회사 보지 않기
 const neverSee = async (accessToken:string,companyName:string):Promise<void>=>{
@@ -28,8 +27,8 @@ const neverSee = async (accessToken:string,companyName:string):Promise<void>=>{
             }
         })
     }catch (e){
+        console.log("이미 회사가 제외 되어있음")
         console.error("에러가 발생함")
-
     }
 
 }
@@ -73,4 +72,34 @@ const neverSeeCompanys = async (accessToken:string):Promise<any[]>=>{
     return neverSeeCompanyList;
 }
 
-module.exports={neverSee,neverSeeCompanys}
+const delneverSeeCompany = async (accessToken:string,companyName:string):Promise<void> =>{
+    try{
+        const emailT = await prisma.tokens.findFirst({
+            where:{
+                access_token:accessToken
+            }
+        })
+        if(emailT===null){
+            throw new Error("잘못된 회원")
+        }
+        const user =  await prisma.users.findFirst({
+            where:{
+                email:emailT.email
+            }
+        })
+        if(user===null){
+            throw new Error("잘못된 회원")
+        }
+        await prisma.submissions.delete({
+            where:{
+                user_id:user.user_id,
+                company_name:companyName
+            }
+        })
+    }catch (e){
+        console.error("이미 제외된 회사임")
+    }
+
+}
+
+module.exports={neverSee,neverSeeCompanys,delneverSeeCompany}
