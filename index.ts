@@ -26,6 +26,7 @@ crawlingScheduler();
 app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
     const tokens  = await getToken(code);
+    console.log("code",code);
     const loginTF  = await loginUser(tokens.id_token);
     if(loginTF) {
         if(tokens!==null ||tokens!==undefined){
