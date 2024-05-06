@@ -152,6 +152,7 @@ const deleteAccessToken  = async (access_token:string):Promise<void> =>{
             }
         })
         if(tokenID===null){
+            console.log("토큰이 없어서 에러 발생")
             throw new Error("토큰이 없어요");
         }
         await prisma.tokens.delete({

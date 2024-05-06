@@ -49,6 +49,7 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
 });
 //로그아웃시
 app.get("/api/logout",cookieParser(),async (req:Request,res:Response)=>{
+    console.log("tk",req.cookies["access_token"])
     await deleteAccessToken(req.cookies["access_token"]);
     res.clearCookie("access_token",{domain: '.lsapee.com'});
     res.clearCookie("access",{domain: '.lsapee.com'});
