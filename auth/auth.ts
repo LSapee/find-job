@@ -75,4 +75,4 @@ type VerifyAccessTokenResult = accessTokenType | string | undefined;
 
 
 // module.exports={verifyIdToken,getToken,verifyAccessToken,isLoggedIn}
-module.exports={verifyIdToken,getToken,getKey,tokenEndpoint}
+module.exports={verifyIdToken,getToken,getKey}
