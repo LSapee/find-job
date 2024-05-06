@@ -5,11 +5,9 @@ import {idTokenType} from '../types/types';
 //로그인 하기 -> 아이디 없을경우 생성 있을경우 로그인 처리
 const loginUser = async (token:string|null):Promise<boolean|string> =>{
     let email:string = "";
-    console.log(token);
     try{
-        console.log("1234");
+        console.log(verifyIdToken);
         const tokenData:idTokenType = await verifyIdToken(token)
-        console.log("tokenData",tokenData)
         const oauthLogin = tokenData["identities"];
         const oauthName:string = tokenData["cognito:username"];
         const userName:string = tokenData.given_name;
