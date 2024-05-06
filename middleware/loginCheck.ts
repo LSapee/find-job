@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from "jsonwebtoken";
 import {accessTokenType} from "../types/types";
-const {getKey,tokenEndpoint} = require("../auth/auth");
+const {getKey} = require("../auth/auth");
 const {getRefreshToken,updateAccessToken,deleteRefreshToken} = require("../Repository/user.Repository");
 
+const tokenEndpoint = `${process.env.MYURL}/oauth2/token`;
 interface TokenResponse {
     accessToken: string|boolean;
     decoded?: VerifyAccessTokenResult;
