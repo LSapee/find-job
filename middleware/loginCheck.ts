@@ -72,7 +72,7 @@ const isLoggedIn = async (access_token:string):Promise<isLoggedInResponse|null> 
 }
 
 export async function checkToken(req: Request, res: Response, next: NextFunction) {
-    const accessToken = req.cookies['access-token'];
+    const accessToken = req.cookies['access_token'];
     if(accessToken) {
         console.log("로그인 되어있음")
         const TokenT = await isLoggedIn(accessToken);
