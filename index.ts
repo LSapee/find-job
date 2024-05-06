@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import {MyList} from "./types/types";
+import {checkToken} from "./middleware/loginCheck";
 const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {loginUser,saveTokens} = require("./Repository/user.Repository");
@@ -26,6 +27,7 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
     const tokens  = await getToken(code);
     const loginTF  = await loginUser(tokens.id_token);
+    console.log("loginTF",loginTF)
     if(loginTF) {
         if(tokens!==null ||tokens!==undefined){
             res.cookie("access_token",tokens.access_token,{
@@ -39,7 +41,7 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
                 secure: true,
                 sameSite: 'none'
             });
-            await saveTokens(tokens.refresh_token,tokens.access_token);
+            await saveTokens(tokens.refresh_token,tokens.access_token,loginTF);
         }
     }
     res.redirect("https://findjob.lsapee.com");
@@ -51,27 +53,12 @@ app.get("/api/logout",async (req:Request,res:Response)=>{
     res.redirect("https://findjob.lsapee.com");
 });
 // job DB 조회
-app.get("/api/getjob",cookieParser(), async (req:Request,res:Response)=>{
-    // access_token 가져오기
-    const access_Token = req.cookies["access_token"];
-    const hasAccessToken:boolean = !!access_Token;
-    const LoginT = await isLoggedIn(access_Token);
-    console.log("hasAccessToken",hasAccessToken);
-    if(hasAccessToken){
-        //토큰 검증에서 에러 발생하면 로그아웃 처리
-        if(!LoginT.sign) return res.redirect("https://findjobapi.lsapee.com/api/logout");
-        res.cookie("access_token",LoginT.accessToken,{
-            httpOnly:true,
-            domain: '.lsapee.com',
-            secure: true,
-            sameSite: 'none'
-        });
-    }
+app.get("/api/getjob",cookieParser(),checkToken, async (req:Request,res:Response)=>{
     const {search:keyword,expAll:expAll,exp:myExp,startNum:startNum} = req.query;
     // 추가 조회할 정보 데이터 시작번호
     let stnum:number =0;
     if(typeof(startNum)==="string")  stnum = parseInt(startNum);
-    const loggedIn:boolean =LoginT.sign;
+    const loggedIn:boolean = req.userEmail !== undefined ? true:false;
     const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum,loggedIn);
     res.send(myList);
 })

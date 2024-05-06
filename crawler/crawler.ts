@@ -2,7 +2,6 @@ import {Builder, Browser, By, Key, until, WebDriver, logging, WebElement} from '
 import chrome from "selenium-webdriver/chrome"
 import {MyList} from "../types/types";
 const {hasElement,hasURL,hasNextPage,exps,expOk,companyReNamed} = require("../utils/utils");
-const {makeCSV} = require("../makeCSV/makeCSV")
 const {crawlerRepository} =require("../Repository/crawler.Repository");
 
 let chromeOptions:chrome.Options = new chrome.Options();
@@ -77,7 +76,6 @@ const jobKCrawler = async (keyword:string):Promise<boolean>=>{
     console.log("jobK 크롤링 종료합니다.");
     return true;
 }
-
 const saramInCrawler = async (keyword:string) :Promise<boolean>=>{
     const myURL = `https://www.saramin.co.kr/zf_user`;
     // let driver = await new Builder().forBrowser("chrome").build();

@@ -3,7 +3,8 @@ const {verifyIdToken} = require("../auth/auth");
 import {idTokenType} from '../types/types';
 
 //로그인 하기 -> 아이디 없을경우 생성 있을경우 로그인 처리
-const loginUser = async (token:string):Promise<boolean> =>{
+const loginUser = async (token:string):Promise<boolean|string> =>{
+    let email:string = "";
     try{
         const tokenData:idTokenType = await verifyIdToken(token)
         const oauthLogin = tokenData["identities"];
@@ -56,12 +57,12 @@ const loginUser = async (token:string):Promise<boolean> =>{
                })
            }
         }
-
+        email=userEmail;
     }catch (e){
         console.log("error",e);
         return false;
     }
-    return true;
+    return email;
 }
 //리프레시 토큰 가져오기
 const getRefreshToken = async (access_token:string): Promise<string|null> =>{
@@ -84,12 +85,13 @@ const getRefreshToken = async (access_token:string): Promise<string|null> =>{
     return refresh_token;
 }
 //리프레시 토큰 및 엑세스 토큰 DB에 저장
-const saveTokens = async (refresh_token:string,access_token:string):Promise<boolean>=>{
+const saveTokens = async (refresh_token:string,access_token:string,email:string):Promise<boolean>=>{
     try{
         await prisma.tokens.create({
             data:{
                 refresh_token:refresh_token,
-                access_token:access_token
+                access_token:access_token,
+                email:email,
             }
         })
     }catch (e){
@@ -142,4 +144,32 @@ const deleteRefreshToken  = async (refresh_token:string):Promise<void> =>{
     }
 
 }
-module.exports  = {loginUser,saveTokens,getRefreshToken,updateAccessToken,deleteRefreshToken}
+// 엑세스 토큰을 가지고 email가져오기
+const getEmail = async (token:string):Promise<string> =>{
+    let resultEmail:string = "";
+    try{
+        const tokenID = await prisma.tokens.findFirst({
+            where:{
+                access_token:token
+            }
+        })
+        if(tokenID===null){
+            throw new Error("토큰이 없어요");
+        }
+        const email = await prisma.tokens.findFirst({
+            where:{
+                token_id:tokenID.token_id
+            }
+        })
+        if(email===null){
+            throw new Error("토큰이 없어요");
+        }
+        resultEmail = email.email;
+    }catch (e){
+        console.log("이미 토큰이 삭제되었어요 getEmail")
+        return "";
+    }
+    return resultEmail;
+
+}
+module.exports  = {loginUser,saveTokens,getRefreshToken,updateAccessToken,deleteRefreshToken,getEmail}

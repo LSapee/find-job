@@ -3,7 +3,7 @@ import {MyList} from "../types/types";
 
 const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumber:number,loggedIn:boolean):Promise<MyList[]|boolean>=>{
     const myList:MyList[] = [];
-    console.log("loggedIn",loggedIn)
+    console.log("loggedIn findJob :",loggedIn)
     try{
         //키워드의 ID 검색
         let keywordId:number;
