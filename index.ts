@@ -3,12 +3,14 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import {MyList} from "./types/types";
-import {checkToken} from "./middleware/loginCheck";
+import {checkToken, requireLogin} from "./middleware/loginCheck";
 const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {loginUser,saveTokens,deleteAccessToken} = require("./Repository/user.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
+const {neverSee,neverSeeCompanys} = require("./Repository/compony.Repository")
 const {getToken} = require("./auth/auth");
+
 const port = 3000;
 
 
@@ -49,7 +51,6 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
 });
 //로그아웃시
 app.get("/api/logout",cookieParser(),async (req:Request,res:Response)=>{
-    console.log("tk",req.cookies["access_token"])
     await deleteAccessToken(req.cookies["access_token"]);
     res.clearCookie("access_token",{domain: '.lsapee.com'});
     res.clearCookie("access",{domain: '.lsapee.com'});
@@ -71,11 +72,22 @@ app.get("/api/getKeywords",async (req:Request,res:Response)=>{
     res.send(keywords);
 })
 // 해당 회사 공고 보지 않기
-app.post("/api/companys",async (req:Request,res:Response)=>{
-
+app.post("/api/companys",cookieParser(),requireLogin,async (req:Request,res:Response)=>{
+    const access_token:string = req.cookies["access_token"];
+    const {companyName} = req.body
+    await neverSee(access_token,companyName)
+    // const {}
+    //임시로 보내기
+    res.send({"sss":"성공"})
+})
+// 내가 공고 보지 않기로 한 회사 목록
+app.get("/api/companys",cookieParser(),requireLogin,async (req:Request,res:Response)=>{
+    const access_token:string = req.cookies["access_token"];
+    const companys = await neverSeeCompanys(access_token);
+    res.send(companys);
 })
 //해당 회사 공고 지원 완료
-app.post("/api/companyT",async (req:Request,res:Response)=>{
+app.post("/api/companyT",cookieParser(),requireLogin,async (req:Request,res:Response)=>{
 
 })
 

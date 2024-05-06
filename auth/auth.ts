@@ -16,7 +16,6 @@ const getToken =async (code:string):Promise<string|null> =>{
         code: code,
     });
     try {
-        console.log("tokenEndpoint",tokenEndpoint)
         const response = await fetch(tokenEndpoint, {
             method: 'POST',
             headers: {
@@ -51,7 +50,6 @@ type VerifyIdTokenResult = idTokenType | string | undefined;
 // ID 토큰 검사
 const verifyIdToken = async (token:string|null):Promise<VerifyIdTokenResult|false> =>{
     if(token===null) return false;
-    console.log("토큰검사")
     return new Promise((resolve, reject) => {
         jwt.verify(token, getKey, {
             issuer: process.env.JWKSURI,
