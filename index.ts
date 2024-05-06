@@ -48,7 +48,7 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
     res.redirect("https://findjob.lsapee.com");
 });
 //로그아웃시
-app.get("/api/logout",async (req:Request,res:Response)=>{
+app.get("/api/logout",cookieParser(),async (req:Request,res:Response)=>{
     await deleteAccessToken(req.cookies["access_token"]);
     res.clearCookie("access_token",{domain: '.lsapee.com'});
     res.clearCookie("access",{domain: '.lsapee.com'});
