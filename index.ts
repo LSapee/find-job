@@ -58,8 +58,8 @@ app.get("/api/getjob",cookieParser(),checkToken, async (req:Request,res:Response
     // 추가 조회할 정보 데이터 시작번호
     let stnum:number =0;
     if(typeof(startNum)==="string")  stnum = parseInt(startNum);
-    const loggedIn:boolean = req.userEmail !== undefined ? true:false;
-    const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum,loggedIn);
+    // const loggedIn:boolean = req.userEmail !== undefined ? true:false;
+    const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum);
     res.send(myList);
 })
 //등록된 키워드 데이터 가져오기
