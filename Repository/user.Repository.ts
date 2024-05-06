@@ -8,6 +8,7 @@ const loginUser = async (token:string):Promise<boolean|string> =>{
     console.log(token);
     try{
         const tokenData:idTokenType = await verifyIdToken(token)
+        console.log("tokenData",tokenData)
         const oauthLogin = tokenData["identities"];
         const oauthName:string = tokenData["cognito:username"];
         const userName:string = tokenData.given_name;
