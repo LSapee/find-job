@@ -1,3 +1,4 @@
+require('dotenv').config();
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -9,7 +10,7 @@ const {loginUser,saveTokens} = require("./Repository/user.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
 const {getToken} = require("./auth/auth");
 const port = 3000;
-require('dotenv').config();
+
 
 const corsOptions = {
     origin: 'https://findjob.lsapee.com', // 허용할 오리진 명시
