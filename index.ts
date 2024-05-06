@@ -24,6 +24,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 //json 데이터 파싱
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 // 자동 크롤링
 crawlingScheduler();
@@ -51,14 +52,14 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
     res.redirect("https://findjob.lsapee.com");
 });
 //로그아웃시
-app.get("/api/logout",cookieParser(),async (req:Request,res:Response)=>{
+app.get("/api/logout",async (req:Request,res:Response)=>{
     await deleteAccessToken(req.cookies["access_token"]);
     res.clearCookie("access_token",{domain: '.lsapee.com'});
     res.clearCookie("access",{domain: '.lsapee.com'});
     res.redirect("https://findjob.lsapee.com");
 });
 // job DB 조회
-app.get("/api/getjob",cookieParser(),checkToken, async (req:Request,res:Response)=>{
+app.get("/api/getjob",checkToken, async (req:Request,res:Response)=>{
     const loggedIn:boolean = req.cookies["access_token"] !==undefined ? true:false;
     const {search:keyword,expAll:expAll,exp:myExp,startNum:startNum} = req.query;
     // 추가 조회할 정보 데이터 시작번호
@@ -73,7 +74,7 @@ app.get("/api/getKeywords",async (req:Request,res:Response)=>{
     res.send(keywords);
 })
 // 해당 회사 공고 보지 않기
-app.post("/api/companys",cookieParser(),requireLogin,async (req:Request,res:Response)=>{
+app.post("/api/companys",requireLogin,async (req:Request,res:Response)=>{
     const access_token:string = req.cookies["access_token"];
     const {companyName} = req.body
     await neverSee(access_token,companyName)
@@ -82,14 +83,14 @@ app.post("/api/companys",cookieParser(),requireLogin,async (req:Request,res:Resp
     res.send({"sss":"성공"})
 })
 // 내가 공고 보지 않기로 한 회사 목록
-app.get("/api/companys",cookieParser(),requireLogin,async (req:Request,res:Response)=>{
+app.get("/api/companys",requireLogin,async (req:Request,res:Response)=>{
     const access_token:string = req.cookies["access_token"];
     console.log("access_token",access_token)
     const companys = await neverSeeCompanys(access_token);
     res.send(companys);
 })
 //해당 회사 공고 지원 완료
-app.post("/api/companyT",cookieParser(),requireLogin,async (req:Request,res:Response)=>{
+app.post("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
 
 })
 
