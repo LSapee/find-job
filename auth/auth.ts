@@ -132,4 +132,4 @@ const isLoggedIn = async (access_token:string):Promise<isLoggedInResponse> => {
 
 }
 
-module.exports={getToken,verifyIdToken,verifyAccessToken,isLoggedIn}
+module.exports={verifyIdToken,getToken,verifyAccessToken,isLoggedIn}
