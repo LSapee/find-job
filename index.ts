@@ -3,7 +3,8 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import {MyList} from "./types/types";
-import {checkToken, requireLogin} from "./middleware/loginCheck";
+import {checkToken} from "./middleware/loginCheck";
+import {requireLogin} from "./middleware/requireLogin";
 const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {loginUser,saveTokens,deleteAccessToken} = require("./Repository/user.Repository");
