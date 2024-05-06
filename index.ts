@@ -53,11 +53,12 @@ app.get("/api/logout",async (req:Request,res:Response)=>{
     res.redirect("https://findjob.lsapee.com");
 });
 // job DB 조회
-app.get("/api/getjob",cookieParser(),checkToken, async (req:Request,res:Response)=>{
+app.get("/api/getjob",cookieParser(), async (req:Request,res:Response)=>{
     const {search:keyword,expAll:expAll,exp:myExp,startNum:startNum} = req.query;
     // 추가 조회할 정보 데이터 시작번호
     let stnum:number =0;
     if(typeof(startNum)==="string")  stnum = parseInt(startNum);
+    // console.log("req.userEmail",req.userEmail)
     // const loggedIn:boolean = req.userEmail !== undefined ? true:false;
     const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum);
     res.send(myList);
