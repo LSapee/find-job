@@ -7,7 +7,7 @@ const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {loginUser,saveTokens} = require("./Repository/user.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
-const {getToken,verifyIdToken} = require("./auth/auth");
+const {getToken} = require("./auth/auth");
 const port = 3000;
 
 const corsOptions = {
