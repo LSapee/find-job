@@ -2,16 +2,10 @@ import fetch from "node-fetch";
 import qs from "qs";
 import * as jwt from 'jsonwebtoken';
 import { JwksClient } from 'jwks-rsa';
-import {idTokenType,accessTokenType} from '../types/types';
+import {idTokenType} from '../types/types';
 
 const COGNITO_ISSUER = `https://cognito-idp.${process.env.AWS_REGION}.amazonaws.com/${process.env.COGNITO_USER_POOL_ID}`;
 const tokenEndpoint = `${process.env.MYURL}/oauth2/token`;
-
-interface TokenResponse {
-    accessToken: string|boolean;
-    decoded?: VerifyAccessTokenResult;
-}
-
 
 const getToken =async (code:string):Promise<string|null> =>{
     let data;
@@ -22,6 +16,7 @@ const getToken =async (code:string):Promise<string|null> =>{
         code: code,
     });
     try {
+        console.log("tokenEndpoint",tokenEndpoint)
         const response = await fetch(tokenEndpoint, {
             method: 'POST',
             headers: {
@@ -70,9 +65,5 @@ const verifyIdToken = async (token:string|null):Promise<VerifyIdTokenResult|fals
         });
     });
 };
-type VerifyAccessTokenResult = accessTokenType | string | undefined;
-// 엑세스토큰 검사
 
-
-// module.exports={verifyIdToken,getToken,verifyAccessToken,isLoggedIn}
 module.exports={verifyIdToken,getToken,getKey}
