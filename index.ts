@@ -6,7 +6,7 @@ import {MyList} from "./types/types";
 import {checkToken} from "./middleware/loginCheck";
 const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
-const {loginUser,saveTokens} = require("./Repository/user.Repository");
+const {loginUser,saveTokens,deleteAccessToken} = require("./Repository/user.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
 const {getToken} = require("./auth/auth");
 const port = 3000;
@@ -28,7 +28,6 @@ crawlingScheduler();
 app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
     const tokens  = await getToken(code);
-    console.log(tokens);
     const loginTF  = await loginUser(tokens.id_token);
     if(loginTF) {
         if(tokens!==null ||tokens!==undefined){
@@ -50,6 +49,7 @@ app.get("/api/auth",async (req:Request,res:Response)=>{
 });
 //로그아웃시
 app.get("/api/logout",async (req:Request,res:Response)=>{
+    await deleteAccessToken(req.cookies["access_token"]);
     res.clearCookie("access_token",{domain: '.lsapee.com'});
     res.clearCookie("access",{domain: '.lsapee.com'});
     res.redirect("https://findjob.lsapee.com");
@@ -61,8 +61,6 @@ app.get("/api/getjob",cookieParser(),checkToken, async (req:Request,res:Response
     // 추가 조회할 정보 데이터 시작번호
     let stnum:number =0;
     if(typeof(startNum)==="string")  stnum = parseInt(startNum);
-    // console.log("req.userEmail",req.userEmail)
-    // const loggedIn:boolean = req.userEmail !== undefined ? true:false;
     const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum,loggedIn);
     res.send(myList);
 })

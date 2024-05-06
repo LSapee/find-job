@@ -15,9 +15,6 @@ const getToken =async (code:string):Promise<string|null> =>{
         redirect_uri: process.env.REDIRECT_URI,
         code: code,
     });
-    console.log("COGNITO_ISSUER",COGNITO_ISSUER)
-    console.log("client_id",process.env.CLIENT_ID)
-    console.log("redirect_uri",process.env.REDIRECT_URI)
     try {
         console.log("tokenEndpoint",tokenEndpoint)
         const response = await fetch(tokenEndpoint, {
