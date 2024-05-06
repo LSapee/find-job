@@ -95,6 +95,7 @@ export async function checkToken(req: Request, res: Response, next: NextFunction
 }
 export async function requireLogin(req: Request, res: Response, next: NextFunction) {
     const accessToken = req.cookies['access_token'];
+    console.log(accessToken,"accessToken")
     if (!accessToken) {
         console.log("로그인 필요");
         return res.redirect("https://login.lsapee.com"); // 로그인 페이지 URL로 변경하세요
