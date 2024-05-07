@@ -47,11 +47,19 @@ const neverSeeCompanys = async (accessToken:string):Promise<any[]>=>{
 const delneverSeeCompany = async (accessToken:string,companyName:string):Promise<void> =>{
     try{
         const email =await getEmail(accessToken);
-        const userId = await getUserId(email);
-        await prisma.submissions.delete({
+        const userId:number = await getUserId(email);
+        const deleteCompanyOne = await prisma.submissions.findFirst({
             where:{
                 user_id:userId,
                 company_name:companyName
+            }
+        })
+        if(deleteCompanyOne===null){
+            throw new Error("없어");
+        }
+        await prisma.submissions.delete({
+            where:{
+                submission_id:deleteCompanyOne.submission_id
             }
         })
     }catch (e){
