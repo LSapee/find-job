@@ -26,7 +26,8 @@ const neverSeeCompanys = async (accessToken:string):Promise<any[]>=>{
         const userId = await getUserId(email);
         const companys = await prisma.submissions.findMany({
             where:{
-                user_id:userId
+                user_id:userId,
+                job_title:"제외"
             }
         })
         if(companys===null){
