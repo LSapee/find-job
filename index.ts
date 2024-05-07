@@ -104,6 +104,7 @@ app.post("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
 })
 // 지원 완료한 회사 목록 가져오기
 app.get("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
+    console.log("123132");
     const access_token:string = req.cookies["access_token"];
     const data = await application_completed_companyList(access_token);
     res.send(data);
