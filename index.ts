@@ -2,7 +2,7 @@ require('dotenv').config();
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import {MyList} from "./types/types";
+import {MyList,userLoggedIn} from "./types/types";
 import {checkToken} from "./middleware/loginCheck";
 import {requireLogin} from "./middleware/requireLogin";
 const app = express();
@@ -14,7 +14,6 @@ const {application_completed,application_completed_companyList} = require("./Rep
 const {getToken} = require("./auth/auth");
 
 const port = 3000;
-
 
 const corsOptions = {
     origin: 'https://findjob.lsapee.com', // 허용할 오리진 명시
@@ -61,12 +60,13 @@ app.get("/api/logout",async (req:Request,res:Response)=>{
 });
 // job DB 조회
 app.get("/api/getjob",checkToken, async (req:Request,res:Response)=>{
-    const loggedIn:boolean = req.cookies["access_token"] !==undefined ? true:false;
+    let userLog ={sign:false, access_token :""};
+    if(req.cookies["access_token"] !==undefined) userLog = {sign:true, access_token:req.cookies["access_token"]};
     const {search:keyword,expAll:expAll,exp:myExp,startNum:startNum} = req.query;
     // 추가 조회할 정보 데이터 시작번호
     let stnum:number =0;
     if(typeof(startNum)==="string")  stnum = parseInt(startNum);
-    const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum,loggedIn);
+    const myList:MyList|boolean = await findAlljob(keyword,expAll,myExp,stnum,userLog);
     res.send(myList);
 })
 //등록된 키워드 데이터 가져오기
@@ -104,6 +104,7 @@ app.post("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
     await application_completed(access_token,companyName,titleName,siteName);
     res.send({"ㅋㅋㅋ":"지원 완료 등록 성공"})
 })
+// 지원 완료한 회사 목록 가져오기
 app.get("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
     const access_token:string = req.cookies["access_token"];
     const data = await application_completed_companyList(access_token);

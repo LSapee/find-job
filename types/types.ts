@@ -54,6 +54,11 @@ export type accessTokenType = {
     error?: string;
 }
 
+export type userLoggedIn = {
+    sign : boolean;
+    access_token: string;
+}
+
 /*
 * company = 회사명
 * postTitle = 공고명

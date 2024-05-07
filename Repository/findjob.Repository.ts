@@ -1,13 +1,19 @@
 import {prisma} from "./prismaDB";
-import {MyList} from "../types/types";
+import {MyList, userLoggedIn} from "../types/types";
+const {getEmail,getUserId} =require("./user.Repository")
 
 
-const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumber:number,loggedIn:boolean):Promise<MyList[]|boolean>=>{
+const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumber:number,loggedIn:userLoggedIn):Promise<MyList[]|boolean>=>{
     const myList:MyList[] = [];
-    console.log("loggedIn findJob :",loggedIn)
+    console.log("loggedIn findJob :",loggedIn.sign)
     try{
         //키워드의 ID 검색
         let keywordId:number;
+        let userId:number = -1;
+        if(loggedIn.sign){
+            const email = await getEmail(loggedIn.access_token);
+            userId = await getUserId(email);
+        }
         // 해당 키워드가 존재하는지 DB검색
         const keywordFind = await prisma.keywords.findFirst({
             where:{
@@ -22,28 +28,64 @@ const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumbe
         }
     const experience_level:string = exp == "신입"?"%신입%":exp=="전부"?"전부":`%${exp}년%`;
         if(exp==="전부"){
+            let jobs;
             //그냥 전부 가져오기
-            const jobs = await prisma.job_Keywords.findMany({
-                where:{
-                    keyword_id: keywordId,
-                },
-                include: {
-                    posting:{
-                        select:{
-                            company_name:true,
-                            title:true,
-                            experience_level:true,
-                            education_level:true,
-                            location:true,
-                            tech_stack:true,
-                            closing_date:true,
-                            link:true
-                        },
+            if(userId===-1){
+                jobs = await prisma.job_Keywords.findMany({
+                    where:{
+                        keyword_id: keywordId,
+                    },
+                    include: {
+                        posting:{
+                            select:{
+                                company_name:true,
+                                title:true,
+                                experience_level:true,
+                                education_level:true,
+                                location:true,
+                                tech_stack:true,
+                                closing_date:true,
+                                link:true
+                            },
+                        }
+                    },
+                    skip:stNumber,
+                    take:100
+                })
+            }else{
+                const comp = await prisma.submissions.findMany({
+                    where:{
+                        user_id:userId,
                     }
-                },
-                skip:stNumber,
-                take:100
-            })
+                })
+                const appliedCompanyNames = comp.map(application => application.company_name);
+                jobs = await prisma.job_Keywords.findMany({
+                    where:{
+                        keyword_id: keywordId,
+                        posting:{
+                            company_name: {
+                                notIn: appliedCompanyNames, // 지원한 회사명 제외
+                            },
+                        }
+                    },
+                    include: {
+                        posting:{
+                            select:{
+                                company_name:true,
+                                title:true,
+                                experience_level:true,
+                                education_level:true,
+                                location:true,
+                                tech_stack:true,
+                                closing_date:true,
+                                link:true
+                            },
+                        }
+                    },
+                    skip:stNumber,
+                    take:100
+                })
+            }
             jobs.forEach(item =>{
                 myList.push({
                     company :item.posting.company_name,
