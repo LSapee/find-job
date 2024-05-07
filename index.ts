@@ -77,10 +77,9 @@ app.get("/api/getKeywords",async (req:Request,res:Response)=>{
 app.post("/api/companys",requireLogin,async (req:Request,res:Response)=>{
     const access_token:string = req.cookies["access_token"];
     const {companyName} = req.body
-    await neverSee(access_token,companyName)
-    // const {}
-    //임시로 보내기
-    res.send({"sss":"성공"})
+    const result =await neverSee(access_token,companyName)
+    if(result === true) res.send({"보지않기 ":"성공"})
+    else res.send({"보지않기":"실패"})
 })
 // 내가 공고 보지 않기로 한 회사 목록
 app.get("/api/companys",requireLogin,async (req:Request,res:Response)=>{
@@ -116,7 +115,7 @@ app.delete("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
     await application_completed_company_cen(access_token,companyName);
     res.send({"SSS":"성공"})
 })
-
+app.get
 //메인 페이지
 app.get("/",(req:Request,res:Response)=>{
     res.sendFile(__dirname+"/src/index.html")

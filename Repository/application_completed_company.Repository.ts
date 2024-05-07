@@ -34,7 +34,7 @@ const application_completed_companyList = async (accessToken:string):Promise<any
             }
         })
         if(data===null){
-            throw new Error("dddd")
+            throw new Error("에러 발생")
         }
         data.forEach((one)=>{
             result.push({

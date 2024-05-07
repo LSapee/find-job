@@ -9,6 +9,7 @@ export async function requireLogin(req: Request, res: Response, next: NextFuncti
     } else {
         console.log("로그인 검증 중");
         const TokenT = await isLoggedIn(accessToken);
+        console.log("TokenT",TokenT)
         if (TokenT === null || TokenT.sign === false) {
             res.clearCookie("access_token", { domain: '.lsapee.com' });
             res.clearCookie("access", { domain: '.lsapee.com' });
