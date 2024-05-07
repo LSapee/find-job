@@ -1,5 +1,6 @@
 import {prisma} from "./prismaDB";
 import {MyList} from "../types/types";
+const {dateArr} = require("../utils/utils");
 
 const crawlerRepository =async (Mylists:MyList[], keyWord:string):Promise<boolean> =>{
     let ans :boolean = true;
@@ -16,16 +17,32 @@ const crawlerRepository =async (Mylists:MyList[], keyWord:string):Promise<boolea
         }
         const keywordId:number = keyWordFind.id;
         for (const item of Mylists) {
-            // 해당 url 있는지 확인
+            // 해당 게시글 있는지 확인
             const okData = await prisma.job_Posting.findFirst({
                 where :{
                     title: item.postTitle,
                     company_name:item.company
                 }
             })
-            // url이 이미 존재한다면
+            // 해당 포스터가 이미 존재한다면
             if(okData!==null){
-                const postId = okData.id
+                const postId:number = okData.id
+                //해당 게시글 업데이트
+                await prisma.job_Posting.update({
+                    where:{
+                        id: postId
+                    },
+                    data:{
+                        company_name :item.company,
+                        title :item.postTitle,
+                        experience_level:item.exp.toString(),
+                        education_level :item.edu,
+                        location:item.loc,
+                        tech_stack :item.skillStacks,
+                        closing_date:item.endDate,
+                        link:item.postURL.toString(),
+                    }
+                })
                 // 검색한 키워드가 해당 url과 연결되어있는지 확인
                 const keywordIn  = await prisma.job_Keywords.findFirst({
                     where:{
@@ -94,5 +111,59 @@ const findKeywords = async ():Promise<string[]>=>{
     }
     return keywords;
 }
-module.exports = {crawlerRepository,findKeywords}
+
+const postDel = async ():Promise<boolean>=>{
+    try{
+        const postListNum = await prisma.job_Posting.count();
+        for(let i =0; i<postListNum; i+=1000){
+            const postData = await prisma.job_Posting.findMany({
+                skip: i,
+                take: i+1000
+            })
+            if(postData===null){
+                throw new Error("힘들다");
+            }
+            for(let j=0; j<postData.length; j++){
+                if(postData[j].closing_date.includes("상시채용")||postData[j].closing_date.includes("오늘마감")||postData[j].closing_date.includes("채용시")||postData[j].closing_date.includes("내일마감"))continue ;
+                const endDate:number[] =dateArr(postData[j].closing_date);
+                const thisM = new Date().getMonth()+1;
+                const thisD = new Date().getDate();
+                if(thisM>endDate[0]){
+                    //공고를 지워야하는 경우 1
+                    await prisma.job_Keywords.deleteMany({
+                        where:{
+                            posting_id:postData[j].id
+                        }
+                    })
+                    await prisma.job_Posting.delete({
+                        where:{
+                            id:postData[j].id,
+                            company_name:postData[j].company_name,
+                        }
+                    })
+                }else{
+                    if(thisD>endDate[1]){
+                        //오늘이 공고를 지워야하는 경우 2
+                        await prisma.job_Keywords.deleteMany({
+                            where:{
+                                posting_id:postData[j].id
+                            }
+                        })
+                        await prisma.job_Posting.delete({
+                            where:{
+                                id:postData[j].id,
+                                company_name:postData[j].company_name,
+                            }
+                        })
+                    }
+                }
+            }
+            console.log(`공고 ${i}~${i+1000}번 기간지난 공고 삭제 완료`);
+        }
+    }catch (e){
+        return false;
+    }
+    return true;
+}
+module.exports = {crawlerRepository,findKeywords,postDel}
 

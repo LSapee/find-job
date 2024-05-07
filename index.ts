@@ -12,7 +12,6 @@ const {crawlingScheduler} = require("./utils/scheduler")
 const {neverSee,neverSeeCompanys,delneverSeeCompany} = require("./Repository/compony.Repository")
 const {application_completed,application_completed_companyList} = require("./Repository/application_completed_company.Repository")
 const {getToken} = require("./auth/auth");
-
 const port = 3000;
 
 const corsOptions = {
