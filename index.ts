@@ -10,7 +10,7 @@ const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {loginUser,saveTokens,deleteAccessToken} = require("./Repository/user.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
 const {neverSee,neverSeeCompanys,delneverSeeCompany} = require("./Repository/compony.Repository")
-const {application_completed,application_completed_companyList} = require("./Repository/application_completed_company.Repository")
+const {application_completed,application_completed_companyList,application_completed_company_cen} = require("./Repository/application_completed_company.Repository")
 const {getToken} = require("./auth/auth");
 const port = 3000;
 
@@ -108,6 +108,13 @@ app.get("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
     const access_token:string = req.cookies["access_token"];
     const data = await application_completed_companyList(access_token);
     res.send(data);
+})
+//지원 완료한 회사 취소 기능
+app.delete("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
+    const access_token:string = req.cookies["access_token"];
+    const {companyName} = req.body
+    await application_completed_company_cen(access_token,companyName);
+    res.send({"SSS":"성공"})
 })
 
 //메인 페이지

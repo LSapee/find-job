@@ -50,4 +50,31 @@ const application_completed_companyList = async (accessToken:string):Promise<any
     return result;
 
 }
-module.exports={application_completed,application_completed_companyList}
+// 지원 완료 취소
+const application_completed_company_cen = async (accessToken:string,companyName:string):Promise<void>=>{
+    try{
+        const email =await getEmail(accessToken);
+        const userId:number = await getUserId(email);
+        const deleteCompanyOne = await prisma.submissions.findFirst({
+            where:{
+                user_id:userId,
+                company_name:companyName,
+                job_title:{
+                    not:"제외"
+                }
+            }
+        })
+        if(deleteCompanyOne===null){
+            throw new Error("없어");
+        }
+        await prisma.submissions.delete({
+            where:{
+                submission_id:deleteCompanyOne.submission_id
+            }
+        })
+    }catch (e){
+        console.error("이미 제외된 회사임")
+    }
+}
+
+module.exports={application_completed,application_completed_companyList,application_completed_company_cen}
