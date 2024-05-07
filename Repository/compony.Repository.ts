@@ -51,7 +51,8 @@ const delneverSeeCompany = async (accessToken:string,companyName:string):Promise
         const deleteCompanyOne = await prisma.submissions.findFirst({
             where:{
                 user_id:userId,
-                company_name:companyName
+                company_name:companyName,
+                job_title:"제외"
             }
         })
         if(deleteCompanyOne===null){
