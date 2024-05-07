@@ -22,7 +22,6 @@ const hasURL =async (Aelement:WebElement,targetSite:string):Promise<boolean|stri
         return false;
     }
 }
-
 // 다음 페이지로 가는 버튼 유무 확인
 const hasNextPage = async (driver:WebDriver,targetSite:string):Promise<boolean>=>{
     let nextTag ="";
@@ -61,7 +60,6 @@ const hasNextPage = async (driver:WebDriver,targetSite:string):Promise<boolean>=
     await driver.sleep(1000);
     return t;
 }
-
 // 경력을 n~m년차를 (1년,2년,3년)으로 나누기 또는 n년 이상을 n~10(5년,6년,7년 ...)으로 바꾸는 작업
 const exps = (exp:string):string[] =>{
     const expList:string[]  =[];
@@ -102,7 +100,7 @@ const expOk = (exp:string,myExp:string,expAllOk:boolean) =>{
     if(exp.includes(`${myExp}년`)) return true;
     return false;
 }
-
+// 회사이름에서 (주),주식회사 같은 내용이랑 띄어쓰기 제거하기
 const companyReNamed = (company:string) : string=>{
     let companyName = company.replace("㈜","");
     companyName = companyName.replace("(주)","");
@@ -110,14 +108,12 @@ const companyReNamed = (company:string) : string=>{
     companyName = companyName.replace(/ /gi,"");
     return companyName;
 }
-
-//DB데이터 월/일 추출
+//DB 데이터에서 월/일 추출
 const dateArr = (date:string):number[]=>{
     // \d는 숫자에 해당하며, +는 하나 이상의 숫자를 의미합니다.
     const regex = /\d+/g;
     const matches = date.match(regex) || [];
     return matches.map(Number);
 }
-
 
 module.exports = {hasElement,hasURL,hasNextPage,exps,expOk,companyReNamed,dateArr}

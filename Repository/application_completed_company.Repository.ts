@@ -48,7 +48,6 @@ const application_completed_companyList = async (accessToken:string):Promise<any
         console.error("목록 e",e)
     }
     return result;
-
 }
 // 지원 완료 취소
 const application_completed_company_cen = async (accessToken:string,companyName:string):Promise<void>=>{

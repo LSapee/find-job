@@ -14,7 +14,7 @@ chromeOptions.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64)
 // WebDriver 속성 제거
 chromeOptions.excludeSwitches('enable-automation');
 chromeOptions.addArguments('--disable-blink-features=AutomationControlled');
-
+// 잡코리아 크롤링
 const jobKCrawler = async (keyword:string):Promise<boolean>=>{
     let driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
     // let driver = await new Builder().forBrowser("chrome").build();
@@ -76,6 +76,7 @@ const jobKCrawler = async (keyword:string):Promise<boolean>=>{
     console.log("jobK 크롤링 종료합니다.");
     return true;
 }
+// 사람인 크롤링
 const saramInCrawler = async (keyword:string) :Promise<boolean>=>{
     const myURL = `https://www.saramin.co.kr/zf_user`;
     // let driver = await new Builder().forBrowser("chrome").build();

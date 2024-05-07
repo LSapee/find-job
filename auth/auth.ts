@@ -7,6 +7,7 @@ import {idTokenType} from '../types/types';
 const COGNITO_ISSUER = `https://cognito-idp.${process.env.AWS_REGION}.amazonaws.com/${process.env.COGNITO_USER_POOL_ID}`;
 const tokenEndpoint = `${process.env.MYURL}/oauth2/token`;
 
+// 토큰 가져오기
 const getToken =async (code:string):Promise<string|null> =>{
     let data;
     const params = qs.stringify({
@@ -44,7 +45,6 @@ const getKey = (header:jwt.JwtHeader, callback:jwt.SigningKeyCallback):void=>{
         callback(null, signingKey);
     });
 }
-
 // 토큰 검사
 type VerifyIdTokenResult = idTokenType | string | undefined;
 // ID 토큰 검사

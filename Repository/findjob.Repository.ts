@@ -2,10 +2,9 @@ import {prisma} from "./prismaDB";
 import {MyList, userLoggedIn} from "../types/types";
 const {getEmail,getUserId} =require("./user.Repository")
 
-
+// 데이터 가져오기
 const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumber:number,loggedIn:userLoggedIn):Promise<MyList[]|boolean>=>{
     const myList:MyList[] = [];
-    console.log("loggedIn findJob :",loggedIn.sign)
     try{
         //키워드의 ID 검색
         let keywordId:number;
@@ -200,7 +199,7 @@ const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumbe
     }
     return myList;
 }
-
+// 모든 키워드 가져오기
 const findAllkeyWords = async ():Promise<string[]|boolean> =>{
     const keywords:string[] =[];
     let dataIsIn = false;
@@ -218,7 +217,6 @@ const findAllkeyWords = async ():Promise<string[]|boolean> =>{
     }catch(e){
         console.error(e);
     }
-
     return dataIsIn ? keywords : dataIsIn;
 }
 

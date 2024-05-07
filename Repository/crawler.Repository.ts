@@ -2,6 +2,7 @@ import {prisma} from "./prismaDB";
 import {MyList} from "../types/types";
 const {dateArr} = require("../utils/utils");
 
+// 크롤링 데이터 DB에 넣어주기
 const crawlerRepository =async (Mylists:MyList[], keyWord:string):Promise<boolean> =>{
     let ans :boolean = true;
     try{
@@ -93,6 +94,7 @@ const crawlerRepository =async (Mylists:MyList[], keyWord:string):Promise<boolea
     }
     return ans;
 }
+// 키워드 리스트 가져오기
 const findKeywords = async ():Promise<string[]>=>{
     const keywords:string[] = [];
     try{
@@ -111,7 +113,7 @@ const findKeywords = async ():Promise<string[]>=>{
     }
     return keywords;
 }
-
+// 기간지난 공고 DB에서 삭제하기 및 마감일 없는 공고 DB에서 삭제
 const postDel = async ():Promise<boolean>=>{
     try{
         const postListNum = await prisma.job_Posting.count();
@@ -177,5 +179,6 @@ const postDel = async ():Promise<boolean>=>{
     }
     return true;
 }
+
 module.exports = {crawlerRepository,findKeywords,postDel}
 

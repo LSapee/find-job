@@ -2,7 +2,7 @@ require('dotenv').config();
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import {MyList,userLoggedIn} from "./types/types";
+import {MyList} from "./types/types";
 import {checkToken} from "./middleware/loginCheck";
 import {requireLogin} from "./middleware/requireLogin";
 const app = express();
@@ -14,16 +14,20 @@ const {application_completed,application_completed_companyList,application_compl
 const {getToken} = require("./auth/auth");
 const port = 3000;
 
+// COrs옵션 설정
 const corsOptions = {
     origin: 'https://findjob.lsapee.com', // 허용할 오리진 명시
     // origin: 'http://localhost:3000', // 허용할 오리진 명시
     credentials: true, // 자격 증명(쿠키 등) 허용
     optionsSuccessStatus: 200 // 일부 브라우저에서 요구하는 응답 상태
 };
+//cors 설정
 app.use(cors(corsOptions));
 //json 데이터 파싱
 app.use(express.json());
+// 쿠키파서 적용
 app.use(cookieParser());
+// urlparam 파싱
 app.use(express.urlencoded({ extended: true }));
 // 자동 크롤링
 crawlingScheduler();
@@ -94,7 +98,6 @@ app.delete("/api/companys",requireLogin,async (req:Request,res:Response)=>{
     await delneverSeeCompany(access_token,companyName);
     res.send({"SSS":"성공"})
 })
-
 //해당 회사 공고 지원 완료
 app.post("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
     const access_token:string = req.cookies["access_token"];
@@ -104,7 +107,6 @@ app.post("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
 })
 // 지원 완료한 회사 목록 가져오기
 app.get("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
-    console.log("123132");
     const access_token:string = req.cookies["access_token"];
     const data = await application_completed_companyList(access_token);
     res.send(data);
@@ -116,8 +118,7 @@ app.delete("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
     await application_completed_company_cen(access_token,companyName);
     res.send({"SSS":"성공"})
 })
-app.get
-//메인 페이지
+//임시페이지
 app.get("/",(req:Request,res:Response)=>{
     res.sendFile(__dirname+"/src/index.html")
 })

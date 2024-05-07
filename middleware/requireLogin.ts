@@ -7,9 +7,8 @@ export async function requireLogin(req: Request, res: Response, next: NextFuncti
         console.log("로그인 필요");
         return res.redirect("https://findjob.lsapee.com");
     } else {
-        console.log("로그인 검증 중");
+        console.log("로그인 검증");
         const TokenT = await isLoggedIn(accessToken);
-        console.log("TokenT",TokenT)
         if (TokenT === null || TokenT.sign === false) {
             console.log("검증 실패")
             res.clearCookie("access_token", { domain: '.lsapee.com' });

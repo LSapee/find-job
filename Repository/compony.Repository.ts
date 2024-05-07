@@ -23,7 +23,6 @@ const neverSee = async (accessToken:string,companyName:string):Promise<boolean>=
             }
         })
     }catch (e){
-        console.log("이미 회사가 제외 되어있음")
         console.error("에러가 발생함")
         return false;
     }
@@ -78,7 +77,6 @@ const delneverSeeCompany = async (accessToken:string,companyName:string):Promise
     }catch (e){
         console.error("이미 제외된 회사임")
     }
-
 }
 
 module.exports={neverSee,neverSeeCompanys,delneverSeeCompany}

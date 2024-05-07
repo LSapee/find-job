@@ -1,6 +1,7 @@
 import {prisma} from "./prismaDB";
 const {verifyIdToken} = require("../auth/auth");
 import {idTokenType} from '../types/types';
+
 //로그인 하기 -> 아이디 없을경우 생성 있을경우 로그인 처리
 const loginUser = async (token:string|null):Promise<boolean|string> =>{
     let email:string = "";
@@ -143,7 +144,7 @@ const deleteRefreshToken  = async (refresh_token:string):Promise<void> =>{
         console.log("이미 토큰이 삭제되었어요")
     }
 }
-
+// 엑세스 토큰 삭제
 const deleteAccessToken  = async (access_token:string):Promise<void> =>{
     try{
         const tokenID = await prisma.tokens.findFirst({
@@ -184,6 +185,7 @@ const getEmail = async (token:string):Promise<string|null> =>{
     return resultEmail;
 
 }
+// Email로 UserId 가져오기
 const getUserId = async (email:string):Promise<number> =>{
     let resultUserId:number = -1;
     try{
@@ -198,7 +200,6 @@ const getUserId = async (email:string):Promise<number> =>{
         resultUserId = User.user_id;
     }catch (e){
         console.error("e",e)
-        console.error("유저가 없어요")
         return -1;
     }
     return resultUserId;
