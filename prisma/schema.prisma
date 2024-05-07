@@ -60,7 +60,7 @@ model Tokens {
 model Submissions {
   submission_id   Int       @id @default(autoincrement())
   user_id         Int
-  company_name    String    @unique
+  company_name    String
   job_title       String
   site_name       String?
   submitted_date  DateTime  @default(now())
