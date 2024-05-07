@@ -10,7 +10,7 @@ const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {loginUser,saveTokens,deleteAccessToken} = require("./Repository/user.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
 const {neverSee,neverSeeCompanys,delneverSeeCompany} = require("./Repository/compony.Repository")
-const {application_completed,application_completed_companyList,application_completed_company_cen} = require("./Repository/application_completed_company.Repository")
+const {application_completed,application_completed_companyList,application_completed_company_cen,application_completed_company_write} = require("./Repository/application_completed_company.Repository")
 const {getToken} = require("./auth/auth");
 const port = 3000;
 
@@ -118,10 +118,21 @@ app.delete("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
     await application_completed_company_cen(access_token,companyName);
     res.send({"SSS":"성공"})
 })
+//지원 완료한 회사 직접 추가
+app.post("/api/appCom",requireLogin,async (req:Request,res:Response)=>{
+    const access_token:string = req.cookies["access_token"];
+    const {comN,postT,subS} = req.body;
+    const success:boolean = await application_completed_company_write(access_token,comN,postT,subS);
+    if(success===false)res.send({success:"추가 실패"})
+    else res.send(success)
+})
+
 //임시페이지
 app.get("/",(req:Request,res:Response)=>{
     res.sendFile(__dirname+"/src/index.html")
 })
+
+
 
 app.listen(port,()=>{
     console.log(`${port}포트로 서비스를 시작합니다~`);

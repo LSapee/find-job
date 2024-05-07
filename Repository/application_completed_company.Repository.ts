@@ -1,6 +1,13 @@
 import {prisma} from "./prismaDB";
 const {getEmail,getUserId} = require("./user.Repository");
 
+interface resulteType {
+    companyName:string,
+    postTitle:string,
+    siteName:string,
+    date:any
+}
+
 //회사 지원 완료처리
 const application_completed = async (accessToken:string,companyName:string,titleName:string,siteName:string):Promise<void>=>{
     try{
@@ -75,5 +82,47 @@ const application_completed_company_cen = async (accessToken:string,companyName:
         console.error("이미 제외된 회사임")
     }
 }
+//직접 지원 완료처리
+const application_completed_company_write = async (accessToken:string,comN:string,postT:string,subS:string):Promise<boolean|resulteType>=>{
+    let result:resulteType = {
+        companyName:"",
+        postTitle:"",
+        siteName:"",
+        date:""
+    };
+    try{
+        const email =await getEmail(accessToken);
+        const userId:number = await getUserId(email);
+        const hasSub = await prisma.submissions.findFirst({
+            where:{
+                user_id:userId,
+                company_name:comN
+            }
+        })
+        if(hasSub!==null){
+            throw new Error("이미 지원한 회사")
+        }
+        const data = await prisma.submissions.create({
+            data:{
+                user_id:userId,
+                company_name:comN,
+                job_title:postT,
+                site_name:subS,
+            }
+        })
+        if(data===null){
+            throw new Error("이미 지원한 회사")
+        }
+        result ={
+            companyName:data.company_name,
+            postTitle:data.job_title,
+            siteName:data.site_name==null?"": data.site_name,
+            date:data.submitted_date,
+        }
+    }catch (e){
+        return false;
+    }
+    return result;
+}
 
-module.exports={application_completed,application_completed_companyList,application_completed_company_cen}
+module.exports={application_completed,application_completed_companyList,application_completed_company_cen,application_completed_company_write}
