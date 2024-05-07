@@ -19,7 +19,6 @@ export async function requireLogin(req: Request, res: Response, next: NextFuncti
             console.log("검증 성공");
             next();
         }
-        next();
     }
 
 }
