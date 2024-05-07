@@ -124,7 +124,19 @@ const postDel = async ():Promise<boolean>=>{
                 throw new Error("힘들다");
             }
             for(let j=0; j<postData.length; j++){
-                if(postData[j].closing_date.includes("상시채용")||postData[j].closing_date.includes("오늘마감")||postData[j].closing_date.includes("채용시")||postData[j].closing_date.includes("내일마감"))continue ;
+                if(postData[j].closing_date.includes("상시채용")||postData[j].closing_date.includes("오늘마감")||postData[j].closing_date.includes("채용시")||postData[j].closing_date.includes("내일마감")){
+                    await prisma.job_Keywords.deleteMany({
+                        where:{
+                            posting_id:postData[j].id
+                        }
+                    })
+                    await prisma.job_Posting.delete({
+                        where:{
+                            id:postData[j].id,
+                            company_name:postData[j].company_name,
+                        }
+                    })
+                }
                 const endDate:number[] =dateArr(postData[j].closing_date);
                 const thisM = new Date().getMonth()+1;
                 const thisD = new Date().getDate();
