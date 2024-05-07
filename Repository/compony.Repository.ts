@@ -1,27 +1,13 @@
 import {prisma} from "./prismaDB";
-
+const {getEmail,getUserId} = require("./user.Repository");
 //회사 보지 않기
 const neverSee = async (accessToken:string,companyName:string):Promise<void>=>{
     try{
-        const emailT = await prisma.tokens.findFirst({
-            where:{
-                access_token:accessToken
-            }
-        })
-        if(emailT===null){
-            throw new Error("잘못된 회원")
-        }
-        const user =  await prisma.users.findFirst({
-            where:{
-                email:emailT.email
-            }
-        })
-        if(user===null){
-            throw new Error("잘못된 회원")
-        }
+        const email =await getEmail(accessToken);
+        const userId = await getUserId(email);
         await prisma.submissions.create({
             data:{
-                user_id:user.user_id,
+                user_id:userId,
                 company_name:companyName,
                 job_title:"제외"
             }
@@ -36,25 +22,11 @@ const neverSee = async (accessToken:string,companyName:string):Promise<void>=>{
 const neverSeeCompanys = async (accessToken:string):Promise<any[]>=>{
     const neverSeeCompanyList:any[] =[];
     try{
-        const emailT = await prisma.tokens.findFirst({
-            where:{
-                access_token:accessToken
-            }
-        })
-        if(emailT===null){
-            throw new Error("잘못된 회원")
-        }
-        const user =  await prisma.users.findFirst({
-            where:{
-                email:emailT.email
-            }
-        })
-        if(user===null){
-            throw new Error("잘못된 회원")
-        }
+        const email =await getEmail(accessToken);
+        const userId = await getUserId(email);
         const companys = await prisma.submissions.findMany({
             where:{
-                user_id:user.user_id
+                user_id:userId
             }
         })
         if(companys===null){
@@ -71,28 +43,14 @@ const neverSeeCompanys = async (accessToken:string):Promise<any[]>=>{
     }
     return neverSeeCompanyList;
 }
-
+// 보지 않기로한 회사 목록에서 제거
 const delneverSeeCompany = async (accessToken:string,companyName:string):Promise<void> =>{
     try{
-        const emailT = await prisma.tokens.findFirst({
-            where:{
-                access_token:accessToken
-            }
-        })
-        if(emailT===null){
-            throw new Error("잘못된 회원")
-        }
-        const user =  await prisma.users.findFirst({
-            where:{
-                email:emailT.email
-            }
-        })
-        if(user===null){
-            throw new Error("잘못된 회원")
-        }
+        const email =await getEmail(accessToken);
+        const userId = await getUserId(email);
         await prisma.submissions.delete({
             where:{
-                user_id:user.user_id,
+                user_id:userId,
                 company_name:companyName
             }
         })

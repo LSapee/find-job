@@ -165,7 +165,7 @@ const deleteAccessToken  = async (access_token:string):Promise<void> =>{
     }
 }
 // 엑세스 토큰을 가지고 email가져오기
-const getEmail = async (token:string):Promise<string> =>{
+const getEmail = async (token:string):Promise<string|null> =>{
     let resultEmail:string = "";
     try{
         const tokenID = await prisma.tokens.findFirst({
@@ -176,20 +176,32 @@ const getEmail = async (token:string):Promise<string> =>{
         if(tokenID===null){
             throw new Error("토큰이 없어요");
         }
-        const email = await prisma.tokens.findFirst({
-            where:{
-                token_id:tokenID.token_id
-            }
-        })
-        if(email===null){
-            throw new Error("토큰이 없어요");
-        }
-        resultEmail = email.email;
+        resultEmail = tokenID.email;
     }catch (e){
         console.log("이미 토큰이 삭제되었어요 getEmail")
-        return "";
+        return null;
     }
     return resultEmail;
 
 }
-module.exports  = {loginUser,saveTokens,getRefreshToken,updateAccessToken,deleteRefreshToken,getEmail,deleteAccessToken}
+const getUserId = async (email:string):Promise<number> =>{
+    let resultUserId:number = -1;
+    try{
+        const User = await prisma.users.findFirst({
+            where:{
+                email:email
+            }
+        })
+        if(User===null){
+            throw new Error("유저가 없어요");
+        }
+        resultUserId = User.user_id;
+    }catch (e){
+        console.error("e",e)
+        console.error("유저가 없어요")
+        return -1;
+    }
+    return resultUserId;
+}
+
+module.exports  = {loginUser,saveTokens,getRefreshToken,updateAccessToken,deleteRefreshToken,getEmail,deleteAccessToken,getUserId}

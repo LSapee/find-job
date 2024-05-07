@@ -10,6 +10,7 @@ const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {loginUser,saveTokens,deleteAccessToken} = require("./Repository/user.Repository");
 const {crawlingScheduler} = require("./utils/scheduler")
 const {neverSee,neverSeeCompanys,delneverSeeCompany} = require("./Repository/compony.Repository")
+const {application_completed,application_completed_companyList} = require("./Repository/application_completed_company.Repository")
 const {getToken} = require("./auth/auth");
 
 const port = 3000;
@@ -98,9 +99,16 @@ app.delete("/api/companys",requireLogin,async (req:Request,res:Response)=>{
 
 //해당 회사 공고 지원 완료
 app.post("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
-
+    const access_token:string = req.cookies["access_token"];
+    const {companyName,titleName,siteName} = req.body
+    await application_completed(access_token,companyName,titleName,siteName);
+    res.send({"ㅋㅋㅋ":"지원 완료 등록 성공"})
 })
-
+app.get("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
+    const access_token:string = req.cookies["access_token"];
+    const data = await application_completed_companyList(access_token);
+    res.send(data);
+})
 
 //메인 페이지
 app.get("/",(req:Request,res:Response)=>{
