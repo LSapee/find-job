@@ -115,5 +115,11 @@ const dateArr = (date:string):number[]=>{
     const matches = date.match(regex) || [];
     return matches.map(Number);
 }
+//endDate에서 지원 문구제외
+const endDateS = (endDate:string):string=>{
+    endDate.replace("입사지원","");
+    endDate.replace("홈페이지 지원","");
+    return endDate;
+}
 
-module.exports = {hasElement,hasURL,hasNextPage,exps,expOk,companyReNamed,dateArr}
+module.exports = {hasElement,hasURL,hasNextPage,exps,expOk,companyReNamed,dateArr,endDateS}

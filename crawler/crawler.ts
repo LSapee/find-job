@@ -1,7 +1,7 @@
 import {Builder, Browser, By, Key, until, WebDriver, logging, WebElement} from 'selenium-webdriver'
 import chrome from "selenium-webdriver/chrome"
 import {MyList} from "../types/types";
-const {hasElement,hasURL,hasNextPage,exps,expOk,companyReNamed} = require("../utils/utils");
+const {hasElement,hasURL,hasNextPage,exps,companyReNamed,endDateS} = require("../utils/utils");
 const {crawlerRepository} =require("../Repository/crawler.Repository");
 
 let chromeOptions:chrome.Options = new chrome.Options();
@@ -43,13 +43,14 @@ const jobKCrawler = async (keyword:string):Promise<boolean>=>{
                 const exp:string = await hasElement(post,"span.exp")
                 const edu:string = await hasElement(post,"span.edu")
                 const loc:string = await hasElement(post,"span.loc.long")
-                const endDate:string = await hasElement(post,"span.date")
+                let endDate:string = await hasElement(post,"span.date")
                 const skillStacks:string = await hasElement(post,"p.etc")
                 const postURL:string|boolean = await hasURL(elements[i],thisSite);
                 const companyName:string = companyReNamed(company);
                 if(postTitle==="")break;
                 if(postURL===false)break;
                 const expArr:string[] =exps(exp);
+                endDate = endDateS(endDate);
                 myList.push({
                     company:companyName,
                     postTitle,
@@ -119,7 +120,7 @@ const saramInCrawler = async (keyword:string) :Promise<boolean>=>{
                 const com:string = await elements[i].findElement(By.css(".area_corp")).getText();
                 const postTitle:string = await post.findElement(By.css(".job_tit")).getText();
                 const postURL:string= await post.findElement(By.css(".job_tit>a")).getAttribute("href");
-                const endDate:string = await post.findElement(By.css(".job_date")).getText();
+                let endDate:string = await post.findElement(By.css(".job_date")).getText();
                 const requirements:string = await post.findElement(By.css(".job_condition")).getText();// 경력 학력
                 const Allrequirements:string[] = requirements.split("\n");
                 const loc:string = Allrequirements[0];
@@ -127,6 +128,7 @@ const saramInCrawler = async (keyword:string) :Promise<boolean>=>{
                 const edu:string = Allrequirements[2];
                 let skillStack:WebElement[] = await post.findElements(By.css(".job_sector a"));
                 let skillStacks:string = "";
+                endDate = endDateS(endDate);
                 for(let z= 0; z<skillStack.length; z++) {
                     skillStacks += await skillStack[z].getText();
                     if(z!==skillStack.length-1)skillStacks+= ",";

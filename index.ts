@@ -62,7 +62,7 @@ app.get("/api/logout",async (req:Request,res:Response)=>{
     res.redirect("https://findjob.lsapee.com");
 });
 // job DB 조회
-app.get("/api/getjob",checkToken, async (req:Request,res:Response)=>{
+app.get("/api/getjobs",checkToken, async (req:Request,res:Response)=>{
     let userLog ={sign:false, access_token :""};
     if(req.cookies["access_token"] !==undefined) userLog = {sign:true, access_token:req.cookies["access_token"]};
     const {search:keyword,expAll:expAll,exp:myExp,startNum:startNum} = req.query;
