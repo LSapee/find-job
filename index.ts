@@ -82,8 +82,8 @@ app.post("/api/companys",requireLogin,async (req:Request,res:Response)=>{
     const access_token:string = req.cookies["access_token"];
     const {companyName} = req.body
     const result =await neverSee(access_token,companyName)
-    if(result === true) res.send({"보지않기 ":"성공"})
-    else res.send({"보지않기":"실패"})
+    if(result === true) res.send({success:"성공"})
+    else res.send({success:"실패"})
 })
 // 내가 공고 보지 않기로 한 회사 목록
 app.get("/api/companys",requireLogin,async (req:Request,res:Response)=>{
