@@ -38,7 +38,10 @@ const neverSeeCompanys = async (accessToken:string):Promise<any[]>=>{
             where:{
                 user_id:userId,
                 job_title:"제외"
-            }
+            },
+            orderBy: {
+                submitted_date:'asc'
+            },
         })
         if(companys===null){
             throw new Error("잘못됨")
@@ -64,7 +67,7 @@ const delneverSeeCompany = async (accessToken:string,companyName:string):Promise
                 user_id:userId,
                 company_name:companyName,
                 job_title:"제외"
-            }
+            },
         })
         if(deleteCompanyOne===null){
             throw new Error("없어");

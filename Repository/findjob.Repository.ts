@@ -48,6 +48,11 @@ const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumbe
                             },
                         }
                     },
+                    orderBy: {
+                        posting: {
+                            closing_date: 'asc'
+                        }
+                    },
                     skip:stNumber,
                     take:100
                 })
@@ -79,6 +84,11 @@ const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumbe
                                 closing_date:true,
                                 link:true
                             },
+                        }
+                    },
+                    orderBy: {
+                        posting: {
+                            closing_date: 'asc'
                         }
                     },
                     skip:stNumber,
@@ -130,6 +140,11 @@ const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumbe
                         },
                     }
                 },
+                orderBy: {
+                    posting: {
+                        closing_date: 'asc'
+                    }
+                },
                 skip:stNumber,
                 take:100
             })
@@ -148,11 +163,6 @@ const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumbe
         }else{
             // 해당 경력만
             const jobs = await prisma.job_Keywords.findMany({
-                orderBy:{
-                    posting:{
-                        company_name:"asc"
-                    }
-                },
                 where:{
                     keyword_id: keywordId,
                     posting:{
@@ -173,6 +183,11 @@ const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumbe
                             closing_date:true,
                             link:true
                         },
+                    }
+                },
+                orderBy: {
+                    posting: {
+                        closing_date: 'asc'
                     }
                 },
                 skip:stNumber,

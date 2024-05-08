@@ -40,7 +40,10 @@ const application_completed_companyList = async (accessToken:string):Promise<any
                 job_title:{
                     not:"제외"
                 }
-            }
+            },
+            orderBy: {
+                submitted_date:'asc'
+            },
         })
         if(data===null){
             throw new Error("에러 발생")
