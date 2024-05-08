@@ -110,7 +110,6 @@ const companyReNamed = (company:string) : string=>{
 }
 //DB 데이터에서 월/일 추출
 const dateArr = (date:string):number[]=>{
-    // \d는 숫자에 해당하며, +는 하나 이상의 숫자를 의미합니다.
     const regex = /\d+/g;
     const matches = date.match(regex) || [];
     return matches.map(Number);
