@@ -9,7 +9,7 @@ interface resulteType {
 }
 
 //회사 지원 완료처리
-const application_completed = async (accessToken:string,companyName:string,titleName:string,siteName:string):Promise<void>=>{
+const application_completed = async (accessToken:string,companyName:string,titleName:string,siteName:string):Promise<boolean>=>{
     try{
         const email =await getEmail(accessToken);
         const userId = await getUserId(email);
@@ -24,7 +24,9 @@ const application_completed = async (accessToken:string,companyName:string,title
     }catch (e){
         console.log("이미 회사에 지원 되어있음")
         console.error("에러가 발생함")
+        return false;
     }
+    return true;
 }
 // 지원 완료된 회사 목록 보여주기
 const application_completed_companyList = async (accessToken:string):Promise<any[]>=>{

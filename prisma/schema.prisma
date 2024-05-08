@@ -66,4 +66,5 @@ model Submissions {
   submitted_date  DateTime  @default(now())
   // User 테이블의 user_id 외래키 설정
   user            Users      @relation(fields: [user_id], references: [user_id])
+  @@unique([company_name, user_id], name: "companyNameUnique")
 }
