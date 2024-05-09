@@ -8,7 +8,7 @@ import {requireLogin} from "./middleware/requireLogin";
 const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {loginUser,saveTokens,deleteAccessToken} = require("./Repository/user.Repository");
-const {crawlingScheduler} = require("./utils/scheduler")
+const {ec2StopTimet,ec2StartTimet} = require("./utils/scheduler")
 const {neverSee,neverSeeCompanys,delneverSeeCompany} = require("./Repository/compony.Repository")
 const {application_completed,application_completed_companyList,application_completed_company_cen,application_completed_company_write} = require("./Repository/application_completed_company.Repository")
 const {getToken} = require("./auth/auth");
@@ -29,8 +29,8 @@ app.use(express.json());
 app.use(cookieParser());
 // urlparam 파싱
 app.use(express.urlencoded({ extended: true }));
-// 자동 크롤링
-crawlingScheduler();
+ec2StartTimet();
+ec2StopTimet();
 //로그인시
 app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
@@ -127,6 +127,8 @@ app.post("/api/appCom",requireLogin,async (req:Request,res:Response)=>{
     if(success===false)res.send({success:"추가 실패"})
     else res.send(success)
 })
+
+
 
 //임시페이지
 app.get("/",(req:Request,res:Response)=>{
