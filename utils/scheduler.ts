@@ -107,7 +107,7 @@ const ec2Stop = async  () =>{
     }
 }
 export const ec2StartTimet = async ()=>{
-    cron.schedule(("35 23 * * *"), async () =>{
+    cron.schedule(("40 23 * * *"), async () =>{
         await ec2Start();
         await startPm2OnEC2Instance();
     })
