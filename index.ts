@@ -95,7 +95,7 @@ app.delete("/api/companys",requireLogin,async (req:Request,res:Response)=>{
     const access_token:string = req.cookies["access_token"];
     const {companyName} = req.body
     await delneverSeeCompany(access_token,companyName);
-    res.send({"success":"성공"})
+    res.send({success:"성공"})
 })
 //해당 회사 공고 지원 완료
 app.post("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
@@ -116,7 +116,7 @@ app.delete("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
     const access_token:string = req.cookies["access_token"];
     const {companyName} = req.body
     await application_completed_company_cen(access_token,companyName);
-    res.send({"SSS":"성공"})
+    res.send({success:"성공"})
 })
 //지원 완료한 회사 직접 추가
 app.post("/api/appCom",requireLogin,async (req:Request,res:Response)=>{
