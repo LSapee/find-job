@@ -5,7 +5,7 @@ import {DescribeInstancesCommand, EC2Client, StartInstancesCommand, StopInstance
 const { exec } = require("child_process");
 
 const awsRegion:string = process.env.AWS_REGION as string;
-const awsInstanceId:string = process.env.AWS_EC2_INSTENT_ID as string;
+const awsInstanceId:string = process.env.AWS_EC2_INSTANCE_ID as string;
 const awsAccessKey:string =process.env.AWS_ACCESS_KEY_ID as string;
 const awsSecretAccessKey:string =process.env.AWS_SECRET_ACCESS_KEY as string;
 const myPemKey:string = process.env.MY_PEM_KEY as string;
@@ -22,12 +22,8 @@ const params = {
     InstanceIds: [awsInstanceId], // 시작할 인스턴스의 ID
 };
 
-const stopCommand = new StopInstancesCommand(params);
-
+// EC2 실행
 const startEC2Instance= async() =>{
-    const params = {
-        InstanceIds: [awsInstanceId]
-    };
     const startCommand = new StartInstancesCommand(params);
     try {
         const start = await ec2Client.send(startCommand);
@@ -38,13 +34,9 @@ const startEC2Instance= async() =>{
         return false;
     }
 }
+//EC2 상태체크
 const checkEC2InstanceState= async () =>{
-    const params = {
-        InstanceIds: [awsInstanceId]
-    };
-
     const command = new DescribeInstancesCommand(params);
-
     try {
         const data = await ec2Client.send(command);
         const state = data.Reservations?.[0]?.Instances?.[0]?.State?.Name;
@@ -61,6 +53,7 @@ const checkEC2InstanceState= async () =>{
     }
 
 }
+// Ec2 실행 및 상태 확인
 const ec2Start = async  () =>{
     try{
         const started = await startEC2Instance();
@@ -78,9 +71,10 @@ const ec2Start = async  () =>{
         console.log("e",e);
     }
 }
+// EC2에서 pm2 실행
 const startPm2OnEC2Instance = async ()=> {
     // SSH로 EC2 인스턴스에 연결하여 pm2를 실행
-    const sshCommand = `ssh -i ${myPemKey} ubuntu@${awsInstanceId} "pm2 start find-job-crollwer/find-job/node_modules/.bin/ts-node --name "find-job" -- index.ts"`;
+    const sshCommand = `ssh -i "${myPemKey}" ubuntu@${process.env.MY_INSTANCE_IP} "pm2 start ./find-job-crollwer/find-job/node_modules/.bin/ts-node --name "find-job" -- index.ts"`;
     exec(sshCommand, (error:any, stdout:any, stderr:any) => {
         if (error) {
             console.error(`pm2 실행 중 오류 발생: ${error.message}`);
@@ -93,41 +87,12 @@ const startPm2OnEC2Instance = async ()=> {
         console.log(`pm2 실행 결과: ${stdout}`);
     });
 }
-const ec2Stop = async  () =>{
-    try {
-        ec2Client.send(stopCommand)
-            .then((data) => {
-                console.log("인스턴스 중지 요청 : ", data);
-            })
-            .catch(err => {
-                console.error("인스턴스 중지 중 오류 발생:", err);
-            });
-    }catch (e){
-        console.log("e",e);
-    }
-}
+// EC2가 켜질 타이밍
 export const ec2StartTimet = async ()=>{
-    cron.schedule(("40 23 * * *"), async () =>{
+    cron.schedule(("40 16 * * *"), async () =>{
         await ec2Start();
-        await startPm2OnEC2Instance();
+        setTimeout(async () => {
+            await startPm2OnEC2Instance();
+        }, 2 * 60 * 1000);
     })
 }
-export const ec2StopTimet = async ()=>{
-    cron.schedule(("45 23 * * *"), async () =>{
-        ec2Stop();
-    })
-}
-
-// 분 시 일 월 요일
-// export const crawlingScheduler = async ()=>{
-//     cron.schedule(("0 0 * * *"), async () =>{
-//         await postDel();
-//         const keywords : string[] = await findKeywords();
-//         for(const item of keywords){
-//             const resultJok = await jobKCrawler(item);
-//             const resultSaramIn = await saramInCrawler(item);
-//             console.log(`크롤링 resultJob ${item}:`, resultJok );
-//             console.log(`크롤링 resultSaramIn ${item}:`, resultSaramIn );
-//         }
-//     })
-// }
