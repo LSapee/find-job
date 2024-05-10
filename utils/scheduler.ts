@@ -89,7 +89,7 @@ const startPm2OnEC2Instance = async ()=> {
 }
 // EC2가 켜질 타이밍
 export const ec2StartTimet = async ()=>{
-    cron.schedule(("25 17 * * *"), async () =>{
+    cron.schedule(("40 17 * * *"), async () =>{
         await ec2Start();
         setTimeout(async () => {
             await startPm2OnEC2Instance();
