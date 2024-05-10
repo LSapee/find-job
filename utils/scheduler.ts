@@ -74,7 +74,7 @@ const ec2Start = async  () =>{
 // EC2에서 pm2 실행
 const startPm2OnEC2Instance = async ()=> {
     // SSH로 EC2 인스턴스에 연결하여 pm2를 실행
-    const sshCommand = `ssh -i "${myPemKey}" ubuntu@${process.env.MY_INSTANCE_IP} "pm2 start ./find-job-crollwer/find-job/node_modules/.bin/ts-node --name "find-job" -- index.ts"`;
+    const sshCommand = `ssh -i "${myPemKey}" ubuntu@${process.env.MY_INSTANCE_IP} "pm2 start ./find-job-craling-only/node_modules/.bin/ts-node --name "find-job" -- index.ts"`;
     exec(sshCommand, (error:any, stdout:any, stderr:any) => {
         if (error) {
             console.error(`pm2 실행 중 오류 발생: ${error.message}`);
