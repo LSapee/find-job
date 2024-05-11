@@ -63,6 +63,7 @@ model Submissions {
   company_name    String
   job_title       String
   site_name       String?
+  status          String
   submitted_date  DateTime  @default(now())
   // User 테이블의 user_id 외래키 설정
   user            Users      @relation(fields: [user_id], references: [user_id])

@@ -19,7 +19,8 @@ const neverSee = async (accessToken:string,companyName:string):Promise<boolean>=
             data:{
                 user_id:userId,
                 company_name:companyName,
-                job_title:"제외"
+                job_title:"제외",
+                status:""
             }
         })
     }catch (e){

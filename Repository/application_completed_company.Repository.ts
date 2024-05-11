@@ -3,7 +3,7 @@ const {getEmail,getUserId} = require("./user.Repository");
 
 interface resulteType {
     companyName:string,
-    postTitle:string,
+    postTitle?:string,
     siteName:string,
     date:any
 }
@@ -19,6 +19,7 @@ const application_completed = async (accessToken:string,companyName:string,title
                 company_name:companyName,
                 job_title:titleName,
                 site_name:siteName,
+                status:"지원완료"
             }
         })
     }catch (e){
@@ -53,7 +54,8 @@ const application_completed_companyList = async (accessToken:string):Promise<any
                 companyName:one.company_name,
                 date :one.submitted_date,
                 siteName:one.site_name,
-                postTitle:one.job_title
+                postTitle:one.job_title,
+                status:one.status
             })
         })
     }catch (e){
@@ -113,6 +115,7 @@ const application_completed_company_write = async (accessToken:string,comN:strin
                 company_name:comN,
                 job_title:postT,
                 site_name:subS,
+                status:"지원완료"
             }
         })
         if(data===null){
