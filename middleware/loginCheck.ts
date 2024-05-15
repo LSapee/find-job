@@ -11,6 +11,17 @@ export async function checkToken(req: Request, res: Response, next: NextFunction
             res.clearCookie("access",{domain: '.lsapee.com'});
             return res.redirect("https://findjob.lsapee.com/error");
         }else{
+            res.cookie("access_token",TokenT.accessToken,{
+                httpOnly:true,
+                domain: '.lsapee.com',
+                secure: true,
+                sameSite: 'none'
+            });
+            res.cookie("access",TokenT.sign,{
+                domain: '.lsapee.com',
+                secure: true,
+                sameSite: 'none'
+            });
             next();
         }
     }else{

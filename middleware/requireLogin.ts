@@ -15,6 +15,17 @@ export async function requireLogin(req: Request, res: Response, next: NextFuncti
             res.clearCookie("access", { domain: '.lsapee.com' });
             return res.redirect("https://findjob.lsapee.com");
         } else {
+            res.cookie("access_token",TokenT.accessToken,{
+                httpOnly:true,
+                domain: '.lsapee.com',
+                secure: true,
+                sameSite: 'none'
+            });
+            res.cookie("access",TokenT.sign,{
+                domain: '.lsapee.com',
+                secure: true,
+                sameSite: 'none'
+            });
             console.log("검증 성공");
             next();
         }

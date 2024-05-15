@@ -11,7 +11,6 @@ interface TokenResponse {
 interface isLoggedInResponse{
     accessToken: string;
     sign :boolean
-    decodeData?: VerifyAccessTokenResult;
 }
 type VerifyAccessTokenResult = accessTokenType | string | undefined;
 
@@ -82,6 +81,6 @@ const isLoggedIn = async (access_token:string):Promise<isLoggedInResponse|null> 
             myTokenisError =true;
         }
     }
-    return ({accessToken: access_token, sign :myTokenisError,decodeData : tokenData.decoded })
+    return ({accessToken: tokenData.accessToken, sign :myTokenisError})
 }
 module.exports = {isLoggedIn}
