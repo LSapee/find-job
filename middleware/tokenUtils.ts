@@ -25,7 +25,9 @@ const verifyAccessToken = async (token:string|null):Promise<TokenResponse|false>
             if (err) {
                 try {
                     console.log("accessToken 오류 있음")
+                    // 리프레시 토큰 가져오기
                     const refreshToken = await getRefreshToken(token);
+                    console.log("refreshToken",refreshToken)
                     const client_id = process.env.CLIENT_ID;
                     if (client_id !== undefined) {
                         const response = await fetch(tokenEndpoint, {
@@ -40,6 +42,7 @@ const verifyAccessToken = async (token:string|null):Promise<TokenResponse|false>
                             }),
                         });
                         const data = await response.json();
+                        console.log("data",data)
                         if (response.ok) {
                             // 새 엑세스 토큰 디코드
                             const newDecoded = jwt.decode(data.access_token) as accessTokenType;
@@ -47,6 +50,7 @@ const verifyAccessToken = async (token:string|null):Promise<TokenResponse|false>
                             resolve({accessToken: data.access_token, decoded: newDecoded});
                         }else {
                             await deleteRefreshToken(refreshToken);
+                            console.log("리프레시 토큰 삭제")
                             reject(false); // API 오류 처리
                         }
                     }
@@ -62,7 +66,8 @@ const verifyAccessToken = async (token:string|null):Promise<TokenResponse|false>
 };
 
 const isLoggedIn = async (access_token:string):Promise<isLoggedInResponse|null> => {
-    const tokenData = await verifyAccessToken(access_token).catch(e=>{return null});
+    const tokenData = await verifyAccessToken(access_token).catch(e=>{return e});
+    console.log("tokenData",tokenData)
     let myTokenisError = false;
     if (!tokenData) return ({accessToken: access_token, sign: myTokenisError})
     else if (tokenData === undefined) {
