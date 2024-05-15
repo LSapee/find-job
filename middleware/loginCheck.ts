@@ -6,6 +6,7 @@ export async function checkToken(req: Request, res: Response, next: NextFunction
     if(accessToken) {
         console.log("엑세스토큰 있음")
         const TokenT = await isLoggedIn(accessToken);
+        console.log("TokenT 로그인체크 미들웨어",TokenT)
         if(TokenT===null || TokenT.sign === false){
             res.clearCookie("access_token",{domain: '.lsapee.com'});
             res.clearCookie("access",{domain: '.lsapee.com'});

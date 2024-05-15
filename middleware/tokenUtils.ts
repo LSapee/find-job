@@ -72,12 +72,13 @@ const isLoggedIn = async (access_token:string):Promise<isLoggedInResponse|null> 
     });
     console.log("tokenData",tokenData)
     let myTokenisError = false;
-    if (!tokenData) return ({accessToken: access_token, sign: myTokenisError})
+    if (tokenData===false) return ({accessToken: access_token, sign: myTokenisError})
     else if (tokenData === undefined) {
         // 토큰 데이터를 찾을 수 없음. => 쿠키에 토큰 자체가 없음.
         return ({accessToken: access_token, sign: myTokenisError})
     } else {
         if((tokenData.decoded as accessTokenType).error === undefined){
+            // 에러가 없음.
             myTokenisError =true;
         }
     }
