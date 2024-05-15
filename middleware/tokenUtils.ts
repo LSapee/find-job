@@ -45,6 +45,7 @@ const verifyAccessToken = async (token:string|null):Promise<TokenResponse|false>
                         console.log("data",data)
                         if (response.ok) {
                             // 새 엑세스 토큰 디코드
+                            console.log("refreshToken으로 엑세스 토큰 발급 성공")
                             const newDecoded = jwt.decode(data.access_token) as accessTokenType;
                             await updateAccessToken(refreshToken, data.access_token);
                             resolve({accessToken: data.access_token, decoded: newDecoded});
@@ -66,11 +67,15 @@ const verifyAccessToken = async (token:string|null):Promise<TokenResponse|false>
 };
 
 const isLoggedIn = async (access_token:string):Promise<isLoggedInResponse|null> => {
-    const tokenData = await verifyAccessToken(access_token).catch(e=>{return e});
+    const tokenData = await verifyAccessToken(access_token).catch(e=>{
+        console.log("tokenData Error : ",e);
+        return e;
+    });
     console.log("tokenData",tokenData)
     let myTokenisError = false;
     if (!tokenData) return ({accessToken: access_token, sign: myTokenisError})
     else if (tokenData === undefined) {
+        // 토큰 데이터를 찾을 수 없음. => 쿠키에 토큰 자체가 없음.
         return ({accessToken: access_token, sign: myTokenisError})
     } else {
         if((tokenData.decoded as accessTokenType).error === undefined){
