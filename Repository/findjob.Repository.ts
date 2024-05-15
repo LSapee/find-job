@@ -168,7 +168,6 @@ const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumbe
                     }
                 })
                 const appliedCompanyNames = comp.map(application => application.company_name);
-                console.log("appliedCompanyNames",appliedCompanyNames);
                 const expA = "%경력무관%";
                 const jobs = await prisma.job_Keywords.findMany({
                     where:{
@@ -278,7 +277,6 @@ const findAlljob = async (keyword:string,expAll:string,exp:number|string,stNumbe
                     }
                 })
                 const appliedCompanyNames = comp.map(application => application.company_name);
-                console.log("appliedCompanyNames",appliedCompanyNames);
                 const jobs = await prisma.job_Keywords.findMany({
                     where:{
                         keyword_id: keywordId,
