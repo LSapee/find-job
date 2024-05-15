@@ -29,7 +29,8 @@ export async function requireLogin(req: Request, res: Response, next: NextFuncti
                 sameSite: 'none'
             });
             console.log("검증 성공");
-            console.log("token : ",req.cookies['access_token'] ,"새로운 토큰이 잘 세팅되었는지 확인용")
+            req.cookies['access_token'] = TokenT.accessToken;
+            console.log(req.cookies['access_token']);
             next();
         }
     }
