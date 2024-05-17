@@ -9,7 +9,7 @@ const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {loginUser,saveTokens,deleteAccessToken} = require("./Repository/user.Repository");
 const {ec2StartTimet} = require("./utils/scheduler")
-const {neverSee,neverSeeCompanys,delneverSeeCompany} = require("./Repository/compony.Repository")
+const {neverSee,neverSeeCompanys,delneverSeeCompany,delAllneverSeeCompany} = require("./Repository/compony.Repository")
 const {application_completed,application_completed_companyList,application_completed_company_cen,application_completed_company_write} = require("./Repository/application_completed_company.Repository")
 const {getToken} = require("./auth/auth");
 const port = 3000;
@@ -97,6 +97,13 @@ app.delete("/api/companys",requireLogin,async (req:Request,res:Response)=>{
     await delneverSeeCompany(access_token,companyName);
     res.send({success:"성공"})
 })
+// 공고 보지 않기로 한 회사 목록 전부 제외
+app.delete("/api/companys/all",requireLogin,async (req:Request,res:Response)=>{
+    const access_token:string = req.cookies["access_token"];
+    const delMessage = await delAllneverSeeCompany(access_token);
+    res.send({success:delMessage})
+})
+
 //해당 회사 공고 지원 완료
 app.post("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
     const access_token:string = req.cookies["access_token"];
@@ -126,6 +133,7 @@ app.post("/api/appCom",requireLogin,async (req:Request,res:Response)=>{
     if(success===false)res.send({success:"추가 실패"})
     else res.send(success)
 })
+
 
 //임시페이지
 app.get("/",(req:Request,res:Response)=>{

@@ -83,4 +83,26 @@ const delneverSeeCompany = async (accessToken:string,companyName:string):Promise
     }
 }
 
-module.exports={neverSee,neverSeeCompanys,delneverSeeCompany}
+// 보지 않기로한 회사 목록 전부 제거
+
+const delAllneverSeeCompany = async (accessToken:string):Promise<string> =>{
+    try{
+        const email =await getEmail(accessToken);
+        const userId:number = await getUserId(email);
+        const deleteCompanys = await prisma.submissions.deleteMany({
+            where:{
+                user_id:userId,
+                job_title:"제외"
+            }
+        })
+        if(deleteCompanys===null){
+            throw new Error("이미 목록이 없음");
+        }
+    }catch(e){
+        return "삭제 실패";
+        console.log("이미 몰록에 회사가 없습니다.")
+    }
+    return "삭제 완료"
+}
+
+module.exports={neverSee,neverSeeCompanys,delneverSeeCompany,delAllneverSeeCompany}
