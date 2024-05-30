@@ -197,7 +197,13 @@ const application_completed_status = async (accessToken:string,status:string,com
 // 상태로 1달 유지된 경우 삭제
 const expired30Day =async ():Promise<void>=>{
     try{
-        const allSubmission = await prisma.submissions.findMany();
+        const allSubmission = await prisma.submissions.findMany({
+            where:{
+                job_title:{
+                    not:"제외"
+                }
+            }
+        });
         if(allSubmission===null){
             throw new Error("실패")
         }
@@ -205,7 +211,7 @@ const expired30Day =async ():Promise<void>=>{
             const dateFromDB = allSubmission[i].submitted_date;
             // 30일 후의 날짜 계산
             const comparisonDate = new Date(dateFromDB);
-            comparisonDate.setDate(comparisonDate.getDate() + 30);
+            comparisonDate.setDate(comparisonDate.getDate() + 18);
             // 오늘 날짜
             const currentDate = new Date();
             // 두 날짜를 비교하여 30일 지났는지 확인
