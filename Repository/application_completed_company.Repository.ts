@@ -66,6 +66,37 @@ const application_completed_companyList = async (accessToken:string):Promise<any
     }
     return result;
 }
+// 불합격한 회사 목록 보여주기
+const failed_companyList = async (accessToken:string):Promise<any[]>=>{
+    const result:any[] =[];
+    try{
+        const email =await getEmail(accessToken);
+        const userId = await getUserId(email);
+        const data = await prisma.submissions.findMany({
+            where:{
+                user_id:userId,
+                status:"불합격"
+            },
+            orderBy: {
+                submitted_date:'desc'
+            },
+        })
+        if(data===null){
+            throw new Error("에러 발생")
+        }
+        data.forEach((one)=>{
+            result.push({
+                companyName:one.company_name,
+                ㅇate :one.submitted_date,
+                site:one.site_name,
+                postT:one.job_title,
+            })
+        })
+    }catch (e){
+        console.error("목록 e",e)
+    }
+    return result;
+}
 // 지원 완료 취소
 const application_completed_company_cen = async (accessToken:string,companyName:string):Promise<void>=>{
     try{
@@ -193,4 +224,4 @@ const expired30Day =async ():Promise<void>=>{
     }
 }
 
-module.exports={application_completed,application_completed_companyList,application_completed_company_cen,application_completed_company_write,application_completed_status,expired30Day}
+module.exports={application_completed,application_completed_companyList,application_completed_company_cen,application_completed_company_write,application_completed_status,expired30Day,failed_companyList}
