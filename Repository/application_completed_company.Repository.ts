@@ -151,7 +151,7 @@ const application_completed_status = async (accessToken:string,status:string,com
                 submission_id:submissionId.submission_id
             },data:{
                 status:status,
-                submitted_date: new Date().toISOString().substring(0,10)
+                submitted_date: new Date(Date.now())
             }
         })
     }catch (e){

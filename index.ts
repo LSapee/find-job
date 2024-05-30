@@ -122,7 +122,6 @@ app.get("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
 app.patch("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
     const access_token:string = req.cookies["access_token"];
     const {status,companyName} = req.body;
-    console.log(companyName);
     const returnStatus  = await application_completed_status(access_token,status,companyName);
     if(returnStatus===true) return res.send({status:status});
     else return res.send({status: "실패"});
