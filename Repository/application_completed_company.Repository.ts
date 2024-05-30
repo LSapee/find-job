@@ -43,7 +43,7 @@ const application_completed_companyList = async (accessToken:string):Promise<any
                 }
             },
             orderBy: {
-                submitted_date:'asc'
+                submitted_date:'desc'
             },
         })
         if(data===null){
@@ -155,6 +155,7 @@ const application_completed_status = async (accessToken:string,status:string,com
             }
         })
     }catch (e){
+        console.log("application_completed_status e",e);
         return false;
     }
     return true;
@@ -185,7 +186,7 @@ const expired30Day =async ():Promise<void>=>{
             }
         }
     }catch (e){
-        console.log(e)
+        console.log("expired30Day e",e)
     }
 }
 
