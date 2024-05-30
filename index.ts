@@ -127,7 +127,7 @@ app.patch("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
     else return res.send({status: "실패"});
 })
 // 불합력한 회사 목록 가져오기
-app.get("/api/companys/failed",requireLogin,async (req:Request,res:Response)=>{
+app.get("/api/companyT/failed",requireLogin,async (req:Request,res:Response)=>{
     const access_token:string = req.cookies["access_token"];
     const data = await failed_companyList(access_token);
     res.send(data);
