@@ -132,7 +132,7 @@ const application_completed_company_write = async (accessToken:string,comN:strin
     }
     return result;
 }
-
+// 상태 변경
 const application_completed_status = async (accessToken:string,status:string,companyName:string):Promise<boolean> => {
     try{
         const email =await getEmail(accessToken);
@@ -150,7 +150,8 @@ const application_completed_status = async (accessToken:string,status:string,com
             where:{
                 submission_id:submissionId.submission_id
             },data:{
-                status:status
+                status:status,
+                submitted_date: new Date().toISOString().substring(0,10)
             }
         })
     }catch (e){
@@ -158,5 +159,34 @@ const application_completed_status = async (accessToken:string,status:string,com
     }
     return true;
 }
+// 상태로 1달 유지된 경우 삭제
+const expired30Day =async ():Promise<void>=>{
+    try{
+        const allSubmission = await prisma.submissions.findMany();
+        if(allSubmission===null){
+            throw new Error("실패")
+        }
+        for(let i=0;i<allSubmission.length;i++){
+            const dateFromDB = allSubmission[i].submitted_date;
+            // 30일 후의 날짜 계산
+            const comparisonDate = new Date(dateFromDB);
+            comparisonDate.setDate(comparisonDate.getDate() + 30);
+            // 오늘 날짜
+            const currentDate = new Date();
+            // 두 날짜를 비교하여 30일 지났는지 확인
+            const is30DaysPassed = currentDate > comparisonDate;
+            if(is30DaysPassed){
+                //30일 지났으면 삭제
+                await prisma.submissions.delete({
+                    where:{
+                        submission_id:allSubmission[i].submission_id
+                    }
+                })
+            }
+        }
+    }catch (e){
+        console.log(e)
+    }
+}
 
-module.exports={application_completed,application_completed_companyList,application_completed_company_cen,application_completed_company_write,application_completed_status}
+module.exports={application_completed,application_completed_companyList,application_completed_company_cen,application_completed_company_write,application_completed_status,expired30Day}

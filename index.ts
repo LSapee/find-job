@@ -1,3 +1,5 @@
+import {delFailCompanys} from "./utils/scheduler";
+
 require('dotenv').config();
 import express, { Request, Response } from 'express';
 import cors from 'cors';
@@ -28,7 +30,7 @@ app.use(express.json());
 app.use(cookieParser());
 // urlparam 파싱
 app.use(express.urlencoded({ extended: true }));
-// ec2StartTimet();
+delFailCompanys();
 //로그인시
 app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
