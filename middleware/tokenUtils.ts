@@ -23,7 +23,6 @@ const verifyAccessToken = async (token:string|null):Promise<TokenResponse|false>
         }, async (err, decoded) => {
             if (err) {
                 try {
-                    console.log("accessToken 오류 있음")
                     // 리프레시 토큰 가져오기
                     const refreshToken = await getRefreshToken(token);
                     const client_id = process.env.CLIENT_ID;
@@ -47,7 +46,6 @@ const verifyAccessToken = async (token:string|null):Promise<TokenResponse|false>
                             resolve({accessToken: data.access_token, decoded: newDecoded});
                         }else {
                             await deleteRefreshToken(refreshToken);
-                            console.log("리프레시 토큰 삭제")
                             reject(false); // API 오류 처리
                         }
                     }

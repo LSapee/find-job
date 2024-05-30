@@ -4,7 +4,6 @@ const {isLoggedIn} = require('./tokenUtils');
 export async function requireLogin(req: Request, res: Response, next: NextFunction) {
     const accessToken = req.cookies['access_token'];
     if (!accessToken) {
-        console.log("로그인 필요");
         return res.redirect("https://findjob.lsapee.com");
     } else {
         const TokenT = await isLoggedIn(accessToken);

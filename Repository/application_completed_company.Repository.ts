@@ -211,7 +211,7 @@ const expired30Day =async ():Promise<void>=>{
             const dateFromDB = allSubmission[i].submitted_date;
             // 30일 후의 날짜 계산
             const comparisonDate = new Date(dateFromDB);
-            comparisonDate.setDate(comparisonDate.getDate() + 18);
+            comparisonDate.setDate(comparisonDate.getDate() + 30);
             // 오늘 날짜
             const currentDate = new Date();
             // 두 날짜를 비교하여 30일 지났는지 확인
