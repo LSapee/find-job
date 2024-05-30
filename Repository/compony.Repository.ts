@@ -82,9 +82,7 @@ const delneverSeeCompany = async (accessToken:string,companyName:string):Promise
         console.error("이미 제외된 회사임")
     }
 }
-
 // 보지 않기로한 회사 목록 전부 제거
-
 const delAllneverSeeCompany = async (accessToken:string):Promise<string> =>{
     try{
         const email =await getEmail(accessToken);
@@ -100,7 +98,6 @@ const delAllneverSeeCompany = async (accessToken:string):Promise<string> =>{
         }
     }catch(e){
         return "삭제 실패";
-        console.log("이미 몰록에 회사가 없습니다.")
     }
     return "삭제 완료"
 }

@@ -8,9 +8,8 @@ import {requireLogin} from "./middleware/requireLogin";
 const app = express();
 const {findAlljob,findAllkeyWords} = require("./Repository/findjob.Repository")
 const {loginUser,saveTokens,deleteAccessToken} = require("./Repository/user.Repository");
-const {ec2StartTimet} = require("./utils/scheduler")
 const {neverSee,neverSeeCompanys,delneverSeeCompany,delAllneverSeeCompany} = require("./Repository/compony.Repository")
-const {application_completed,application_completed_companyList,application_completed_company_cen,application_completed_company_write} = require("./Repository/application_completed_company.Repository")
+const {application_completed,application_completed_companyList,application_completed_company_cen,application_completed_company_write,application_completed_status} = require("./Repository/application_completed_company.Repository")
 const {getToken} = require("./auth/auth");
 const port = 3000;
 
@@ -29,7 +28,7 @@ app.use(express.json());
 app.use(cookieParser());
 // urlparam 파싱
 app.use(express.urlencoded({ extended: true }));
-ec2StartTimet();
+// ec2StartTimet();
 //로그인시
 app.get("/api/auth",async (req:Request,res:Response)=>{
     const {code:code}= req.query;
@@ -103,7 +102,6 @@ app.delete("/api/companys/all",requireLogin,async (req:Request,res:Response)=>{
     const delMessage = await delAllneverSeeCompany(access_token);
     res.send({success:delMessage})
 })
-
 //해당 회사 공고 지원 완료
 app.post("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
     const access_token:string = req.cookies["access_token"];
@@ -117,6 +115,15 @@ app.get("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
     const access_token:string = req.cookies["access_token"];
     const data = await application_completed_companyList(access_token);
     res.send(data);
+})
+//지원 완료한 회사 status 변경
+app.patch("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
+    const access_token:string = req.cookies["access_token"];
+    const {status,companyName} = req.body;
+    console.log(companyName);
+    const returnStatus  = await application_completed_status(access_token,status,companyName);
+    if(returnStatus===true) return res.send({status:status});
+    else return res.send({status: "실패"});
 })
 //지원 완료한 회사 취소 기능
 app.delete("/api/companyT",requireLogin,async (req:Request,res:Response)=>{
@@ -133,8 +140,6 @@ app.post("/api/appCom",requireLogin,async (req:Request,res:Response)=>{
     if(success===false)res.send({success:"추가 실패"})
     else res.send(success)
 })
-
-
 //임시페이지
 app.get("/",(req:Request,res:Response)=>{
     res.sendFile(__dirname+"/src/index.html")

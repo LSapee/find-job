@@ -133,4 +133,30 @@ const application_completed_company_write = async (accessToken:string,comN:strin
     return result;
 }
 
-module.exports={application_completed,application_completed_companyList,application_completed_company_cen,application_completed_company_write}
+const application_completed_status = async (accessToken:string,status:string,companyName:string):Promise<boolean> => {
+    try{
+        const email =await getEmail(accessToken);
+        const userId = await getUserId(email);
+        const submissionId = await prisma.submissions.findFirst({
+            where:{
+                user_id:userId,
+                company_name:companyName,
+            }
+        })
+        if(submissionId===null){
+            throw new Error("에러 발생")
+        }
+        await prisma.submissions.update({
+            where:{
+                submission_id:submissionId.submission_id
+            },data:{
+                status:status
+            }
+        })
+    }catch (e){
+        return false;
+    }
+    return true;
+}
+
+module.exports={application_completed,application_completed_companyList,application_completed_company_cen,application_completed_company_write,application_completed_status}
