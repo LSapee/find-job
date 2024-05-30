@@ -87,7 +87,7 @@ const failed_companyList = async (accessToken:string):Promise<any[]>=>{
         data.forEach((one)=>{
             result.push({
                 companyName:one.company_name,
-                ㅇate :one.submitted_date,
+                Date :one.submitted_date,
                 site:one.site_name,
                 postT:one.job_title,
             })
