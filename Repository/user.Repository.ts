@@ -204,5 +204,51 @@ const getUserId = async (email:string):Promise<number> =>{
     }
     return resultUserId;
 }
+// 삭제를 위한 UserName 가져오기
+const getUserName = async (user_id:number):Promise<string> =>{
+    let resultUserName:string = "";
+    try{
+       const myData = await prisma.users.findFirst({
+           where:{
+               user_id:user_id
+           }
+       })
+        if(myData===null){
+            throw new Error("이미 탈퇴된 회원");
+        }
+        if(myData.google_name===null) resultUserName = myData.username;
+        else resultUserName = myData.google_name;
+    }catch (e){
+        console.log("getUserName e",e)
+    }
+    return resultUserName;
+}
+// user삭제 -> Submissions전부 삭제
+const delUser = async (userId:number):Promise<void> =>{
+    try{
+        const AllSub = await prisma.submissions.findMany({
+            where:{
+                user_id:userId
+            }
+        })
+        if(AllSub===null){
+            throw new Error("삭제 실패")
+        }
+        await prisma.submissions.deleteMany({
+            where:{
+                user_id:userId
+            }
+        })
+        await prisma.users.delete({
+            where:{
+                user_id:userId
+            }
+        })
 
-module.exports  = {loginUser,saveTokens,getRefreshToken,updateAccessToken,deleteRefreshToken,getEmail,deleteAccessToken,getUserId}
+    }catch (e){
+        console.error("delAllSuubMissions e",e)
+    }
+
+}
+
+module.exports  = {loginUser,saveTokens,getRefreshToken,updateAccessToken,deleteRefreshToken,getEmail,deleteAccessToken,getUserId,getUserName,delUser}

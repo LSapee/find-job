@@ -13,6 +13,7 @@ const {loginUser,saveTokens,deleteAccessToken} = require("./Repository/user.Repo
 const {neverSee,neverSeeCompanys,delneverSeeCompany,delAllneverSeeCompany} = require("./Repository/compony.Repository")
 const {application_completed,application_completed_companyList,application_completed_company_cen,application_completed_company_write,application_completed_status,failed_companyList} = require("./Repository/application_completed_company.Repository")
 const {getToken} = require("./auth/auth");
+const {deleteUser} =require("./auth/delUser")
 const port = 3000;
 
 // COrs옵션 설정
@@ -147,10 +148,18 @@ app.post("/api/appCom",requireLogin,async (req:Request,res:Response)=>{
     if(success===false)res.send({success:"추가 실패"})
     else res.send(success)
 })
+// 회원 탈퇴
+app.delete("/api/Users",requireLogin,async (req:Request,res:Response)=>{
+    const access_token:string = req.cookies["access_token"];
+    deleteUser(access_token);
+    res.send({success:"회원탈퇴 완료"})
+})
+
 //임시페이지
 app.get("/",(req:Request,res:Response)=>{
     res.sendFile(__dirname+"/src/index.html")
 })
+
 
 app.listen(port,()=>{
     console.log(`${port}포트로 서비스를 시작합니다~`);

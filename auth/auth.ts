@@ -4,6 +4,7 @@ import * as jwt from 'jsonwebtoken';
 import { JwksClient } from 'jwks-rsa';
 import {idTokenType} from '../types/types';
 
+
 const COGNITO_ISSUER = `https://cognito-idp.${process.env.AWS_REGION}.amazonaws.com/${process.env.COGNITO_USER_POOL_ID}`;
 const tokenEndpoint = `${process.env.MYURL}/oauth2/token`;
 
@@ -63,5 +64,6 @@ const verifyIdToken = async (token:string|null):Promise<VerifyIdTokenResult|fals
         });
     });
 };
+
 
 module.exports={verifyIdToken,getToken,getKey}
