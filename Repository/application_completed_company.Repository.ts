@@ -40,6 +40,9 @@ const application_completed_companyList = async (accessToken:string):Promise<any
                 user_id:userId,
                 job_title:{
                     not:"제외"
+                },
+                status:{
+                    not:"불합격"
                 }
             },
             orderBy: {
