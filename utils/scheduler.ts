@@ -5,6 +5,7 @@ export const delFailCompanys= async ()=>{
     cron.schedule(("0 0 * * *"),async ()=>{
        // 불합격 및 지원완료상태/서류확인 상태인 공고 30일 이상된 공고 자동 삭제
         await expired30Day();
+        console.log("30일 지원 지난 공고 삭제 완료")
     });
 }
 // EC2가 켜질 타이밍

@@ -154,7 +154,6 @@ app.delete("/api/Users",requireLogin,async (req:Request,res:Response)=>{
     deleteUser(access_token);
     res.send({success:"회원탈퇴 완료"})
 })
-
 //임시페이지
 app.get("/",(req:Request,res:Response)=>{
     res.sendFile(__dirname+"/src/index.html")
