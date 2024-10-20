@@ -28,4 +28,3 @@
 **- 테이블 구성**
 
 <img src="architecture_images/findJob.png">
-
